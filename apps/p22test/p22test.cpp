@@ -30,8 +30,9 @@ Body *pendulumBody;
 Body *sliderBody;
 
 Constraint *sphericalJoint;
-Constraint *p12Joint;
-Constraint *p22Joint;
+//Constraint *p12Joint;
+//Constraint *p22Joint;
+Constraint *cylindricalJoint;
 
 ForceElement *gravity;
 ForceElement *spring;
@@ -66,8 +67,10 @@ void init_system(void)
 
     sphericalJoint = new SphericalJoint(datumBody,pendulumBody,
                                         s1_p_sphericalJoint,s2_p_sphericalJoint);
-    p12Joint = new Parallel1_2(pendulumBody,sliderBody,s1_p,s2_p);
-    p22Joint = new Parallel2_2(pendulumBody,sliderBody,s1_p,s1B_p,s2B_p);
+    //p12Joint = new Parallel1_2(pendulumBody,sliderBody,s1_p,s2_p);
+    //p22Joint = new Parallel2_2(pendulumBody,sliderBody,s1_p,s1B_p,s2B_p);
+    cylindricalJoint = new CylindricalJoint(
+                pendulumBody, sliderBody, s1_p, s2_p, s1B_p, s2B_p);
 
     gravity = new SystemGravityForce(
 				Eigen::Vector3d(0.0,-GRAVITY,0.0),
@@ -89,8 +92,9 @@ void init_system(void)
     mbsystem.AddBody(sliderBody);
 
     mbsystem.AddConstraint(sphericalJoint);
-    mbsystem.AddConstraint(p12Joint);
-    mbsystem.AddConstraint(p22Joint);
+    //mbsystem.AddConstraint(p12Joint);
+    //mbsystem.AddConstraint(p22Joint);
+    mbsystem.AddConstraint(cylindricalJoint);
 
     mbsystem.AddForce(gravity);
     mbsystem.AddForce(spring);

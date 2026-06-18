@@ -22,4 +22,10 @@ public:
     virtual void Draw(void){}
 };
 
+class ForceModifierElement
+{
+public:
+    virtual void Apply(Eigen::VectorXd &y_rhs)=0;
+};
+
 #endif

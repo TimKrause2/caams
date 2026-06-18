@@ -2,7 +2,6 @@
 #include "forces.h"
 #include <math.h>
 #include <iostream>
-#include <iomanip>
 #include <GL/gl.h>
 #include <GL/freeglut.h>
 #define GLM_FORCE_RADIANS
@@ -12,62 +11,73 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/transform.hpp>
 
-#define PENDULUM_LENGTH 2.0
-#define PENDULUM_RADIUS 0.25
-#define PENDULUM_MASS   1.0
+#define G_GRAVITY 9.81
+#define MASS 1.0
+#define INITIAL_DROP 0.5
+#define RADIUS 0.5
+#define LENGTH 0.2
+#define REST_DROP 1.0
+#define K_SPRING (MASS*G_GRAVITY/REST_DROP)
+#define D_SPRING INITIAL_DROP
+#define K_DAMP 0.00001
+#define N_ROTATION 2
+#define ALPHA_SCREW (REST_DROP/(N_ROTATION*2*M_PI))
 
-#define AXIS_THETA      30.0
-#define BASE_OFFSET     0.5
 
 Body *datumBody = new DatumBody;
-Body *pendulumBody;
-
-Constraint *revoluteJoint;
-
-Eigen::Vector3d g(0.0, -9.81, 0.0);
+Body *massBody;
+Constraint *cylindricalJoint;
+DependentConstraint *screwJoint;
 ForceElement *gravity;
+ForceElement *spring;
 
 System mbsystem;
 
 void init_system(void)
 {
+    Eigen::Vector3d a1_p(0.0, -1.0, 0.0); // datum space
+    Eigen::Vector3d a2_p(0.0, -1.0, 0.0);
+    Eigen::Vector3d s1B_p(0.0, 0.0, 0.0);
+    Eigen::Vector3d s2B_p(0.0, 0.0, 0.0);
+    Eigen::Vector3d r_mass(0.0, -INITIAL_DROP, 0.0);
+    Eigen::Vector4d p_mass(1.0, 0.0, 0.0, 0.0);
+    Eigen::Vector3d r_dot_mass(0.0, 0.0, 0.0);
+    Eigen::Vector4d p_dot_mass(0.0, 0.0, 0.0, 0.0);
 
-	Eigen::Vector4d p_base(caams::pAA(glm::radians(AXIS_THETA),
-									Eigen::Vector3d(0.0,0.0,1.0)));
-	Eigen::Matrix3d A_base(caams::Ap(p_base));
+    massBody = new CylinderYaxis(
+                r_mass,
+                p_mass,
+                r_dot_mass,
+                p_dot_mass,
+                MASS,
+                RADIUS,
+                LENGTH);
 
-	Eigen::Vector3d s1_p_SphericalJoint(BASE_OFFSET*A_base.col(1));
-	Eigen::Vector3d s2_p_SphericalJoint(0.0, 0.0, -PENDULUM_LENGTH/2.0);
+    cylindricalJoint = new CylindricalJoint(
+                datumBody, massBody, a1_p, a2_p, s1B_p, s2B_p);
 
-	Eigen::Vector3d s1_p_ParallelJoint(A_base.col(1));
-	Eigen::Vector3d s2_p_ParallelJoint(0.0, 1.0, 0.0);
+    Eigen::Vector3d n1_p(1.0, 0.0, 0.0);
+    Eigen::Vector3d n2A_p(1.0, 0.0, 0.0);
+    Eigen::Vector3d n2B_p(0.0, 0.0, 1.0);
 
-	Eigen::Vector4d p_pendulum(p_base);
-	Eigen::Matrix3d A_pendulum(A_base);
-	Eigen::Vector3d r_pendulum(s1_p_SphericalJoint - A_pendulum*s2_p_SphericalJoint);
-	Eigen::Vector3d r_dot_pendulum = Eigen::Vector3d::Zero();
-	Eigen::Vector4d p_dot_pendulum = Eigen::Vector4d::Zero();
+    screwJoint = new ScrewJoint(
+                datumBody, massBody, s1B_p, s2B_p,
+                a1_p, n1_p, n2A_p, n2B_p,
+                ALPHA_SCREW, 0.0, 0.0);
 
-    pendulumBody = new CylinderZaxis(r_pendulum,p_pendulum,r_dot_pendulum,p_dot_pendulum,
-                                     PENDULUM_MASS,PENDULUM_RADIUS,PENDULUM_LENGTH);
+	gravity = new SystemGravityForce(
+                Eigen::Vector3d(0.0, -G_GRAVITY, 0.0),
+				mbsystem);
 
-    revoluteJoint = new RevoluteJoint(
-                datumBody, pendulumBody,
-                s1_p_SphericalJoint, s2_p_SphericalJoint,
-                s1_p_ParallelJoint, s2_p_ParallelJoint);
+    spring = new LinearSpringDamperForce(
+                datumBody, massBody, s1B_p, s2B_p,
+                D_SPRING, K_SPRING, K_DAMP);
 
-    gravity = new SystemGravityForce(
-				g,
-                mbsystem);
-
-    mbsystem.AddBody(pendulumBody);
-
-    // mbsystem.AddConstraint(sphericalJoint);
-    // mbsystem.AddConstraint(parallelJoint);
-    mbsystem.AddConstraint(revoluteJoint);
-
-    mbsystem.AddForce(gravity);
-
+    mbsystem.AddBody(massBody);
+    mbsystem.AddConstraint(cylindricalJoint);
+    mbsystem.AddDependentConstraint(screwJoint);
+	mbsystem.AddForce(gravity);
+    mbsystem.AddForce(spring);
     mbsystem.InitializeSolver();
 }
 
@@ -75,8 +85,8 @@ glm::dmat4 camera_rotation(1.0);
 glm::dmat4 camera_translation(glm::translate(glm::dvec3(0.0,0.0,3.0)));
 
 #define NEAR_PLANE 0.1
-#define FAR_PLANE  30.0
-#define FOV        90.0
+#define FAR_PLANE 30.0
+#define FOV (M_PI*90.0/180.0)
 
 void display(void){
     int window_width;
@@ -86,7 +96,7 @@ void display(void){
     window_height = glutGet(GLUT_WINDOW_HEIGHT);
 
     glm::dmat4x4 m_projection = glm::perspective(
-        glm::radians(FOV),(double)window_width/window_height,NEAR_PLANE,FAR_PLANE);
+        FOV,(double)window_width/window_height,NEAR_PLANE,FAR_PLANE);
     glMatrixMode(GL_PROJECTION);
     glLoadMatrixd(glm::value_ptr(m_projection));
 
@@ -99,18 +109,16 @@ void display(void){
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
     glColor3f(1.0f,1.0f,1.0f);
+    mbsystem.Integrate(1/60.0);
+
     mbsystem.Draw();
 
     datumBody->Draw();
 
+    screwJoint->DrawReaction();
+
     glutSwapBuffers();
 
-	double E_g = -pendulumBody->mass*(g.transpose()*pendulumBody->r)(0);
-	double E_total = E_g + pendulumBody->E_k();
-
-	std::cout << "E_total:" << std::setprecision(12) << E_total << std::endl;
-
-	mbsystem.Integrate(1/60.0);
 }
 
 #define TIMER_INTERVAL (1000.0/60.0)
@@ -145,7 +153,7 @@ int main(int argc, char **argv){
     glutInitDisplayMode( GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH );
     glutInitWindowSize (1280, 720);
     glutInitWindowPosition (100, 100);
-    glutCreateWindow ("Revolute Joint Test - Parallel");
+    glutCreateWindow ("mbtest");
     glutDisplayFunc(display);
     glutTimerFunc( TIMER_INTERVAL, timerFunc, 0 );
     glutKeyboardFunc(keyboardFunc);

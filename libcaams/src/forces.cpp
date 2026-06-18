@@ -248,3 +248,24 @@ void BodyDamping::Draw(void)
 {
 
 }
+
+ScrewForce::ScrewForce(Body* body1, Body* body2, Eigen::Vector3d a1_p, double alpha):
+    body1(body1), body2(body2), a1_p(a1_p)
+{
+    double phi = atan(alpha);
+    beta = sin(phi)*cos(phi);
+}
+
+void ScrewForce::Apply(Eigen::VectorXd &y_rhs)
+{
+    Eigen::Vector3d axis = caams::Ap(body1->rk_p)*a1_p;
+    Eigen::Matrix3d proj = axis*axis.transpose();
+    Eigen::Matrix<double,7,1> g2 = y_rhs.segment<7>(body2->eqn_index);
+    Eigen::Vector3d f2 = g2.head<3>();
+    Eigen::Vector4d n_star2 = g2.tail<4>();
+    Eigen::Vector4d n_star2_f = 2.0*beta*caams::G(body2->rk_p).transpose()*proj*f2;
+    Eigen::Vector3d f2_n = 1.0/2.0/beta*proj*caams::G(body2->rk_p)*n_star2;
+    g2.head<3>() = f2_n;
+    g2.tail<4>() = n_star2_f;
+    y_rhs.segment<7>(body2->eqn_index) += g2;
+}

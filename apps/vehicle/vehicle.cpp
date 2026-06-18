@@ -146,6 +146,12 @@ int main(int argc, char **argv){
 		if(SDL_IsGameController(i)){
 			gc = SDL_GameControllerOpen(i);
 			if(gc){
+                std::cout << "Found a game controller." << std::endl;
+                SDL_Joystick *js_gc = SDL_GameControllerGetJoystick(gc);
+                const char *path = SDL_JoystickPath(js_gc);
+                if(path){
+                    std::cout << "path:" << path << std::endl;
+                }
 				break;
 			}else{
 				std::cout << "Could not open gamecontroller " << i << ": " <<

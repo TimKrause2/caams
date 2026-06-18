@@ -16,6 +16,7 @@ namespace caams
 	Eigen::Matrix3d SS(Eigen::Vector3d const & a);
 	Eigen::Vector4d pAA(double angle, Eigen::Vector3d const & axis);
 	Eigen::Matrix3d Ap(Eigen::Vector4d const & p);
+    Eigen::Matrix3d A_dot(Eigen::Vector4d const &p, Eigen::Vector4d const &p_dot);
     Eigen::Vector4d pA(Eigen::Matrix3d const & A);
     Eigen::Matrix3d AAA(double angle, Eigen::Vector3d const & axis);
     Eigen::Matrix4d a_plus(Eigen::Vector3d const & a);

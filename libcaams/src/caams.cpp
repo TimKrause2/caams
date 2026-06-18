@@ -114,6 +114,12 @@ namespace caams
         return A;
     }
 
+    Eigen::Matrix3d A_dot(Eigen::Vector4d const &p, Eigen::Vector4d const &p_dot)
+    {
+        Eigen::Matrix3d r = 2.0*G(p)*L(p_dot).transpose();
+        return r;
+    }
+
     Eigen::Matrix3d AAA(double angle, Eigen::Vector3d const & axis)
     {
         return Ap(pAA(angle, axis));

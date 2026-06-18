@@ -123,5 +123,17 @@ public:
     void Draw(void);
 };
 
+class ScrewForce : public ForceModifierElement
+{
+public:
+    Body* body1;
+    Body* body2;
+    Eigen::Vector3d a1_p; // rotation axis in body one frame. unit vector!
+    double beta;
+    ScrewForce(Body *body1, Body* body2,
+               Eigen::Vector3d a1_p, double alpha);
+    ~ScrewForce(){}
+    void Apply(Eigen::VectorXd &y_rhs);
+};
 
 #endif

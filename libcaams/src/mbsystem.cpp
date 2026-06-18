@@ -24,9 +24,19 @@ void System::AddConstraint(Constraint *constraint)
     constraints.push_back(constraint);
 }
 
+void System::AddDependentConstraint(DependentConstraint *dep_constraint)
+{
+    dep_constraints.push_back(dep_constraint);
+}
+
 void System::AddForce(ForceElement *force)
 {
     forces.push_back(force);
+}
+
+void System::AddForceModifier(ForceModifierElement *force_modifier)
+{
+    force_modifiers.push_back(force_modifier);
 }
 
 void System::InitializeSolver(void)
@@ -46,8 +56,14 @@ void System::InitializeSolver(void)
         constraint->eqn_index = eqn_index;
         eqn_index += constraint->N_eqn;
     }
+    for(auto dconstraint:dep_constraints){
+        dconstraint->eqn_index = eqn_index;
+        eqn_index += dconstraint->N_eqn;
+        dconstraint->theta_eqn_index = eqn_index;
+        eqn_index += 1;
+    }
 
-	N_eqn = eqn_index;
+    N_eqn = eqn_index;
 
     std::cout << "Number of eqations:" << N_eqn << std::endl;
 
@@ -64,6 +80,16 @@ void System::InitializeSolver(void)
         if(constraint->body2->eqn_index!=0){
             N_nzs += 2*7*constraint->N_eqn;
         }
+    }
+
+    for(auto dconstraint:dep_constraints){
+        if(dconstraint->body1->eqn_index!=0){
+            N_nzs += 2*7*dconstraint->N_eqn;
+        }
+        if(dconstraint->body2->eqn_index!=0){
+            N_nzs += 2*7*dconstraint->N_eqn;
+        }
+        N_nzs += dconstraint->N_eqn;
     }
 
     std::cout << "Number of non-zeros:" << N_nzs << std::endl;
@@ -99,37 +125,83 @@ void System::rkSolve(void)
         force->Apply(sp->y_rhs);
     }
 
+    for(auto force:force_modifiers){
+        force->Apply(sp->y_rhs);
+    }
+
     for(auto constraint:constraints){
-		if(constraint->body1->eqn_index>=0){
+        if(constraint->body1->eqn_index>=0){
             sub(constraint->Body1ModifiedJacobian(),
                 constraint->eqn_index,
                 constraint->body1->eqn_index,
                 nzs);
-			sub(constraint->Body1Jacobian().transpose(),
+            sub(constraint->Body1Jacobian().transpose(),
                 constraint->body1->eqn_index,
                 constraint->eqn_index,
                 nzs);
         }
-		if(constraint->body2->eqn_index>=0){
+        if(constraint->body2->eqn_index>=0){
             sub(constraint->Body2ModifiedJacobian(),
                 constraint->eqn_index,
                 constraint->body2->eqn_index,
                 nzs);
-			sub(constraint->Body2Jacobian().transpose(),
+            sub(constraint->Body2Jacobian().transpose(),
                 constraint->body2->eqn_index,
                 constraint->eqn_index,
                 nzs);
         }
-		Eigen::VectorXd gamma_t(constraint->ModifiedGamma());
-		//std::cout << "gamma:" << std::endl << gamma_t << std::endl;
-		gamma_t -= 2.0*STABILIZATION_ALPHA*constraint->dPHI();
-		Eigen::VectorXd PHI(constraint->PHI());
+        Eigen::VectorXd gamma_t(constraint->ModifiedGamma());
+        //std::cout << "gamma:" << std::endl << gamma_t << std::endl;
+        gamma_t -= 2.0*STABILIZATION_ALPHA*constraint->dPHI();
+        Eigen::VectorXd PHI(constraint->PHI());
         //PHI.print("PHI:");
-		gamma_t -= STABILIZATION_BETA*STABILIZATION_BETA*PHI;
-		sp->y_rhs.segment(constraint->eqn_index,constraint->N_eqn) = gamma_t;
+        gamma_t -= STABILIZATION_BETA*STABILIZATION_BETA*PHI;
+        sp->y_rhs.segment(constraint->eqn_index,constraint->N_eqn) = gamma_t;
     }
 
-	sp->A.setFromTriplets(nzs.begin(), nzs.end());
+    for(auto constraint:dep_constraints){
+        if(constraint->body1->eqn_index>=0){
+            sub(constraint->Body1ModifiedJacobian(),
+                constraint->eqn_index,
+                constraint->body1->eqn_index,
+                nzs);
+            sub(constraint->Body1AccelerationEqn(),
+                constraint->theta_eqn_index,
+                constraint->body1->eqn_index,
+                nzs);
+            sub(constraint->Body1Jacobian().transpose(),
+                constraint->body1->eqn_index,
+                constraint->eqn_index,
+                nzs);
+        }
+        if(constraint->body2->eqn_index>=0){
+            sub(constraint->Body2ModifiedJacobian(),
+                constraint->eqn_index,
+                constraint->body2->eqn_index,
+                nzs);
+            sub(constraint->Body2AccelerationEqn(),
+                constraint->theta_eqn_index,
+                constraint->body2->eqn_index,
+                nzs);
+            sub(constraint->Body2Jacobian().transpose(),
+                constraint->body2->eqn_index,
+                constraint->eqn_index,
+                nzs);
+        }
+        sub(constraint->ThetaModifiedJacobian(),
+            constraint->eqn_index,
+            constraint->theta_eqn_index,
+            nzs);
+        Eigen::VectorXd gamma_t(constraint->ModifiedGamma());
+        //std::cout << "gamma:" << std::endl << gamma_t << std::endl;
+        gamma_t -= 2.0*STABILIZATION_ALPHA*constraint->dPHI();
+        Eigen::VectorXd PHI(constraint->PHI());
+        //PHI.print("PHI:");
+        gamma_t -= STABILIZATION_BETA*STABILIZATION_BETA*PHI;
+        sp->y_rhs.segment(constraint->eqn_index,constraint->N_eqn) = gamma_t;
+    }
+
+    sp->A.setFromTriplets(nzs.begin(), nzs.end());
 
     Eigen::SparseLU<SpMat> solver;
 
@@ -148,6 +220,10 @@ void System::rkPhase1State(double dt)
         body->rk_r_dot = body->r_dot;
         body->rk_p_dot = body->p_dot;
     }
+    for(auto dconst:dep_constraints){
+        dconst->rk_theta = dconst->theta;
+        dconst->rk_theta_dot = dconst->theta_dot;
+    }
 }
 
 void System::rkPhase2State(double dt)
@@ -158,6 +234,10 @@ void System::rkPhase2State(double dt)
 		body->rk_p.normalize();
 		body->rk_r_dot = body->r_dot + dt/2.0*body->k_r_ddot.col(0);
 		body->rk_p_dot = body->p_dot + dt/2.0*body->k_p_ddot.col(0);
+    }
+    for(auto dconst:dep_constraints){
+        dconst->rk_theta = dconst->theta + dt/2.0*dconst->k_theta_dot(0);
+        dconst->rk_theta_dot = dconst->theta_dot + dt/2.0*dconst->k_theta_ddot(0);
     }
 }
 
@@ -170,6 +250,10 @@ void System::rkPhase3State(double dt)
 		body->rk_r_dot = body->r_dot + dt/2.0*body->k_r_ddot.col(1);
 		body->rk_p_dot = body->p_dot + dt/2.0*body->k_p_ddot.col(1);
     }
+    for(auto dconst:dep_constraints){
+        dconst->rk_theta = dconst->theta + dt/2.0*dconst->k_theta_dot(1);
+        dconst->rk_theta_dot = dconst->theta_dot + dt/2.0*dconst->k_theta_ddot(1);
+    }
 }
 
 void System::rkPhase4State(double dt)
@@ -180,6 +264,10 @@ void System::rkPhase4State(double dt)
 		body->rk_p.normalize();
 		body->rk_r_dot = body->r_dot + dt*body->k_r_ddot.col(2);
 		body->rk_p_dot = body->p_dot + dt*body->k_p_ddot.col(2);
+    }
+    for(auto dconst:dep_constraints){
+        dconst->rk_theta = dconst->theta + dt*dconst->k_theta_dot(2);
+        dconst->rk_theta_dot = dconst->theta_dot + dt*dconst->k_theta_ddot(2);
     }
 }
 
@@ -194,6 +282,11 @@ void System::rkPhase1Integrate(void)
     for(auto constraint:constraints){
         constraint->k_lambda.col(0) = sp->x.segment(constraint->eqn_index, constraint->N_eqn);
     }
+    for(auto dconst:dep_constraints){
+        dconst->k_lambda.col(0) = sp->x.segment(dconst->eqn_index, dconst->N_eqn);
+        dconst->k_theta_dot(0) = dconst->rk_theta_dot;
+        dconst->k_theta_ddot(0) = sp->x(dconst->theta_eqn_index);
+    }
 }
 
 void System::rkPhase2Integrate(void)
@@ -206,6 +299,11 @@ void System::rkPhase2Integrate(void)
 	}
     for(auto constraint:constraints){
         constraint->k_lambda.col(1) = sp->x.segment(constraint->eqn_index, constraint->N_eqn);
+    }
+    for(auto dconst:dep_constraints){
+        dconst->k_lambda.col(1) = sp->x.segment(dconst->eqn_index, dconst->N_eqn);
+        dconst->k_theta_dot(1) = dconst->rk_theta_dot;
+        dconst->k_theta_ddot(1) = sp->x(dconst->theta_eqn_index);
     }
 }
 
@@ -220,6 +318,11 @@ void System::rkPhase3Integrate(void)
     for(auto constraint:constraints){
         constraint->k_lambda.col(2) = sp->x.segment(constraint->eqn_index, constraint->N_eqn);
     }
+    for(auto dconst:dep_constraints){
+        dconst->k_lambda.col(2) = sp->x.segment(dconst->eqn_index, dconst->N_eqn);
+        dconst->k_theta_dot(2) = dconst->rk_theta_dot;
+        dconst->k_theta_ddot(2) = sp->x(dconst->theta_eqn_index);
+    }
 }
 
 void System::rkPhase4Integrate(void)
@@ -233,6 +336,11 @@ void System::rkPhase4Integrate(void)
     for(auto constraint:constraints){
         constraint->k_lambda.col(3) = sp->x.segment(constraint->eqn_index, constraint->N_eqn);
     }
+    for(auto dconst:dep_constraints){
+        dconst->k_lambda.col(3) = sp->x.segment(dconst->eqn_index, dconst->N_eqn);
+        dconst->k_theta_dot(3) = dconst->rk_theta_dot;
+        dconst->k_theta_ddot(3) = sp->x(dconst->theta_eqn_index);
+    }
 }
 
 void System::rkUpdateState(double dt)
@@ -241,7 +349,10 @@ void System::rkUpdateState(double dt)
     for(auto constraint:constraints){
         constraint->lambda = constraint->k_lambda*-c;
     }
-	c*=dt;
+    for(auto constraint:dep_constraints){
+        constraint->lambda = constraint->k_lambda*-c;
+    }
+    c*=dt;
 	for(auto body:bodies){
 		body->r += body->k_r_dot*c;
 		body->p += body->k_p_dot*c;
@@ -253,6 +364,10 @@ void System::rkUpdateState(double dt)
         // Update rk_p for computing the Jacobian later on
         // outside of the rk solver.
         body->rk_p = body->p;
+    }
+    for(auto dconst:dep_constraints){
+        dconst->theta += dconst->k_theta_dot*c;
+        dconst->theta_dot += dconst->k_theta_ddot*c;
     }
 }
 

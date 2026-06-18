@@ -41,7 +41,9 @@ class System
 public:
     std::vector<Body*> bodies;
     std::vector<Constraint*> constraints;
+    std::vector<DependentConstraint*> dep_constraints;
     std::vector<ForceElement*> forces;
+    std::vector<ForceModifierElement*> force_modifiers;
 
     long N_eqn;
     long p_index;
@@ -53,7 +55,9 @@ public:
 
     void AddBody(Body *body);
     void AddConstraint(Constraint *constraint);
+    void AddDependentConstraint(DependentConstraint *dep_constraint);
     void AddForce(ForceElement *force);
+    void AddForceModifier(ForceModifierElement *force_modifier);
     void InitializeSolver(void);
 private:
     void rkSolve(void);
