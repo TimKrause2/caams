@@ -275,6 +275,37 @@ public:
 public:
 };
 
+class ScrewJoint_1 : public Constraint
+{
+public:
+    Eigen::Vector3d s1_p; // point on axis in body1 space
+    Eigen::Vector3d s2_p; // point on axis in body2 space
+    Eigen::Vector3d u1_p; // normal in body1 space
+    Eigen::Vector3d u2_p; // perpendicular normal in body2 space
+    Eigen::Vector3d a1_p; // axis of rotation in body one space
+    double beta;
+    ScrewJoint_1(
+            Body *body1,
+            Body *body2,
+            Eigen::Vector3d s1_p,
+            Eigen::Vector3d s2_p,
+            Eigen::Vector3d u1_p,
+            Eigen::Vector3d u2_p,
+            Eigen::Vector3d a1_p,
+            double beta);
+    ~ScrewJoint_1(void){}
+    virtual Eigen::MatrixXd Body1Jacobian(void);
+    virtual Eigen::MatrixXd Body2Jacobian(void);
+    virtual Eigen::MatrixXd Body1ModifiedJacobian(void);
+    virtual Eigen::MatrixXd Body2ModifiedJacobian(void);
+    virtual Eigen::VectorXd PHI(void);
+    virtual Eigen::VectorXd ModifiedGamma(void);
+    virtual void Draw(void);
+    virtual void DrawReaction(void);
+
+public:
+};
+
 //
 // Composite constraints
 //

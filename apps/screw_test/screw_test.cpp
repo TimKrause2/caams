@@ -21,13 +21,13 @@
 #define D_SPRING INITIAL_DROP
 #define K_DAMP 0.00001
 #define N_ROTATION 2
-#define ALPHA_SCREW (REST_DROP/(N_ROTATION*2*M_PI))
+#define BETA_SCREW ((N_ROTATION*2*M_PI)/REST_DROP)
 
 
 Body *datumBody = new DatumBody;
 Body *massBody;
 Constraint *cylindricalJoint;
-DependentConstraint *screwJoint;
+Constraint *screwJoint;
 ForceElement *gravity;
 ForceElement *spring;
 
@@ -35,11 +35,11 @@ System mbsystem;
 
 void init_system(void)
 {
-    Eigen::Vector3d a1_p(0.0, -1.0, 0.0); // datum space
-    Eigen::Vector3d a2_p(0.0, -1.0, 0.0);
-    Eigen::Vector3d s1B_p(0.0, 0.0, 0.0);
+    Eigen::Vector3d a1_p(0.0, 1.0, 0.0); // datum space
+    Eigen::Vector3d a2_p(0.0, 1.0, 0.0);
+    Eigen::Vector3d s1B_p(0.0, INITIAL_DROP, 0.0);
     Eigen::Vector3d s2B_p(0.0, 0.0, 0.0);
-    Eigen::Vector3d r_mass(0.0, -INITIAL_DROP, 0.0);
+    Eigen::Vector3d r_mass(0.0, 0.0, 0.0);
     Eigen::Vector4d p_mass(1.0, 0.0, 0.0, 0.0);
     Eigen::Vector3d r_dot_mass(0.0, 0.0, 0.0);
     Eigen::Vector4d p_dot_mass(0.0, 0.0, 0.0, 0.0);
@@ -56,14 +56,15 @@ void init_system(void)
     cylindricalJoint = new CylindricalJoint(
                 datumBody, massBody, a1_p, a2_p, s1B_p, s2B_p);
 
-    Eigen::Vector3d n1_p(1.0, 0.0, 0.0);
-    Eigen::Vector3d n2A_p(1.0, 0.0, 0.0);
-    Eigen::Vector3d n2B_p(0.0, 0.0, 1.0);
+    Eigen::Vector3d s1_p(0.0, 0.0, 0.0);
+    Eigen::Vector3d s2_p(0.0, 0.0, 0.0);
+    Eigen::Vector3d u1_p(1.0, 0.0, 0.0);
+    Eigen::Vector3d u2_p(0.0, 0.0, 1.0);
 
-    screwJoint = new ScrewJoint(
-                datumBody, massBody, s1B_p, s2B_p,
-                a1_p, n1_p, n2A_p, n2B_p,
-                ALPHA_SCREW, 0.0, 0.0);
+    screwJoint = new ScrewJoint_1(
+                datumBody, massBody,
+                s1_p, s2_p, u1_p, u2_p, a1_p,
+                BETA_SCREW);
 
 	gravity = new SystemGravityForce(
                 Eigen::Vector3d(0.0, -G_GRAVITY, 0.0),
@@ -75,7 +76,7 @@ void init_system(void)
 
     mbsystem.AddBody(massBody);
     mbsystem.AddConstraint(cylindricalJoint);
-    mbsystem.AddDependentConstraint(screwJoint);
+    mbsystem.AddConstraint(screwJoint);
 	mbsystem.AddForce(gravity);
     mbsystem.AddForce(spring);
     mbsystem.InitializeSolver();
