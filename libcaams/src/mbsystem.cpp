@@ -135,7 +135,7 @@ void System::rkSolve(void)
                 constraint->eqn_index,
                 constraint->body1->eqn_index,
                 nzs);
-            sub(constraint->Body1Jacobian().transpose(),
+            sub(constraint->Body1ModifiedJacobian().transpose(),
                 constraint->body1->eqn_index,
                 constraint->eqn_index,
                 nzs);
@@ -145,7 +145,7 @@ void System::rkSolve(void)
                 constraint->eqn_index,
                 constraint->body2->eqn_index,
                 nzs);
-            sub(constraint->Body2Jacobian().transpose(),
+            sub(constraint->Body2ModifiedJacobian().transpose(),
                 constraint->body2->eqn_index,
                 constraint->eqn_index,
                 nzs);
