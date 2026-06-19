@@ -3,7 +3,7 @@ project(caams_demo)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-add_compile_options(-ggdb)
+add_compile_options(-O3)
 
 cmake_policy(SET CMP0072 NEW) # Pefer GLVND over legacy GL libraries
 find_package(OpenGL REQUIRED)

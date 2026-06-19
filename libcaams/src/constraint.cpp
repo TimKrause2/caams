@@ -775,8 +775,8 @@ Eigen::MatrixXd Parallel1_2::Body1Jacobian(void)
 		r.block<2,4>(0,3) = PHI_p.block<2,4>(0,0);
         break;
     }
-    std::cout << "Parallel1_2::Body1Jacobian r:\n"
-              << r << std::endl;
+    // std::cout << "Parallel1_2::Body1Jacobian r:\n"
+    //           << r << std::endl;
     return r;
 }
 
@@ -801,8 +801,8 @@ Eigen::MatrixXd Parallel1_2::Body2Jacobian(void)
 		r.block<2,4>(0,3) = PHI_p.block<2,4>(0,0);
 		break;
 	}
-    std::cout << "Parallel1_2::Body2Jacobian r:\n"
-              << r << std::endl;
+    // std::cout << "Parallel1_2::Body2Jacobian r:\n"
+    //           << r << std::endl;
     return r;
 }
 
@@ -828,8 +828,8 @@ Eigen::MatrixXd Parallel1_2::Body1ModifiedJacobian(void)
 		r.block<2,4>(0,3) = PHI_p.block<2,4>(0,0);
 		break;
 	}
-    std::cout << "Parallel1_2::Body1ModifiedJacobian r:\n"
-              << r << std::endl;
+    // std::cout << "Parallel1_2::Body1ModifiedJacobian r:\n"
+    //           << r << std::endl;
     return r;
 }
 
@@ -854,8 +854,8 @@ Eigen::MatrixXd Parallel1_2::Body2ModifiedJacobian(void)
 		r.block<2,4>(0,3) = PHI_p.block<2,4>(0,0);
 		break;
 	}
-    std::cout << "Parallel1_2::Body2ModifiedJacobian r:\n"
-              << r << std::endl;
+    // std::cout << "Parallel1_2::Body2ModifiedJacobian r:\n"
+    //           << r << std::endl;
     return r;
 }
 
@@ -879,8 +879,8 @@ Eigen::VectorXd Parallel1_2::PHI(void)
 		r = r_all.head<2>();
 		break;
 	}
-    std::cout << "Parallel1_2::PHI r:\n"
-              << r << std::endl;
+    // std::cout << "Parallel1_2::PHI r:\n"
+    //           << r << std::endl;
     return r;
 }
 
@@ -910,8 +910,8 @@ Eigen::VectorXd Parallel1_2::ModifiedGamma(void)
 		r = r_all.head<2>();
 		break;
 	}
-    std::cout << "Parallel1_2::ModifiedGamma r:\n"
-              << r << std::endl;
+    // std::cout << "Parallel1_2::ModifiedGamma r:\n"
+    //           << r << std::endl;
     return r;
 }
 
@@ -964,8 +964,8 @@ Eigen::MatrixXd Parallel2_2::Body1Jacobian(void)
 		r.block<2,7>(0,0) = PHI_q.block<2,7>(0,0);
 		break;
 	}
-    std::cout << "Parallel2_2::Body1Jacobian r:\n"
-              << r << std::endl;
+    // std::cout << "Parallel2_2::Body1Jacobian r:\n"
+    //           << r << std::endl;
     return r;
 }
 
@@ -991,8 +991,8 @@ Eigen::MatrixXd Parallel2_2::Body2Jacobian(void)
 		r.block<2,7>(0,0) = PHI_q.block<2,7>(0,0);
 		break;
 	}
-    std::cout << "Parallel2_2::Body2Jacobian r:\n"
-              << r << std::endl;
+    // std::cout << "Parallel2_2::Body2Jacobian r:\n"
+    //           << r << std::endl;
     return r;
 }
 
@@ -1022,8 +1022,8 @@ Eigen::MatrixXd Parallel2_2::Body1ModifiedJacobian(void)
 		r.block<2,7>(0,0) = PHI_q.block<2,7>(0,0);
 		break;
 	}
-    std::cout << "Parallel2_2::Body1ModifiedJacobian r:\n"
-              << r << std::endl;
+    // std::cout << "Parallel2_2::Body1ModifiedJacobian r:\n"
+    //           << r << std::endl;
     return r;
 }
 
@@ -1049,8 +1049,8 @@ Eigen::MatrixXd Parallel2_2::Body2ModifiedJacobian(void)
 		r.block<2,7>(0,0) = PHI_q.block<2,7>(0,0);
 		break;
 	}
-    std::cout << "Parallel2_2::Body2ModifiedJacobian r:\n"
-              << r << std::endl;
+    // std::cout << "Parallel2_2::Body2ModifiedJacobian r:\n"
+    //           << r << std::endl;
     return r;
 }
 
@@ -1076,8 +1076,8 @@ Eigen::VectorXd Parallel2_2::PHI(void)
 		r = r_all.head<2>();
 		break;
 	}
-    std::cout << "Parallel2_2::PHI r:\n"
-              << r << std::endl;
+    // std::cout << "Parallel2_2::PHI r:\n"
+    //           << r << std::endl;
     return r;
 }
 
@@ -1112,8 +1112,8 @@ Eigen::VectorXd Parallel2_2::ModifiedGamma(void)
 		r = r_all.head<2>();
 		break;
 	}
-    std::cout << "Parallel2_2::ModifiedGamma r:\n"
-              << r << std::endl;
+    // std::cout << "Parallel2_2::ModifiedGamma r:\n"
+    //           << r << std::endl;
     return r;
 }
 
@@ -1350,6 +1350,8 @@ Eigen::VectorXd ScrewJoint_1::PHI(void)
 
     result = u1.transpose()*u2;
 
+    // std::cout << "ScrewJoint_1::PHI result:\n"
+    //           << result << std::endl;
     return result;
 }
 
