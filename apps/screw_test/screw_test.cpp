@@ -21,9 +21,9 @@
 #define OMEGA_SPRING sqrt(K_SPRING/MASS)
 #define D_SPRING INITIAL_DROP
 #define K_CRITICAL (2*sqrt(MASS*K_SPRING))
-#define ZETA_DAMP 1.0
+#define ZETA_DAMP 0.1
 #define K_DAMP (2*ZETA_DAMP*OMEGA_SPRING)
-#define N_ROTATION 2
+#define N_ROTATION 10.0
 #define BETA_SCREW ((N_ROTATION*2*M_PI)/REST_DROP)
 
 
@@ -62,7 +62,7 @@ void init_system(void)
     Eigen::Vector3d s1_p(0.0, 0.0, 0.0);
     Eigen::Vector3d s2_p(0.0, 0.0, 0.0);
     Eigen::Vector3d u1_p(1.0, 0.0, 0.0);
-    Eigen::Vector3d u2_p(0.0, 0.0, 1.0);
+    Eigen::Vector3d u2_p(0.0, 0.0,-1.0);
 
     screwJoint = new ScrewJoint_1(
                 datumBody, massBody,

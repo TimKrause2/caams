@@ -1281,7 +1281,8 @@ Eigen::MatrixXd ScrewJoint_1::Body1ModifiedJacobian(void)
     result.tail<4>() = 2*u2.transpose()*caams::G(body1->rk_p)*caams::a_minus(us_p)
             - 2*r1*a1.transpose()*caams::G(body1->rk_p)*caams::a_minus(s1_p)
             + 2*r1*d_vec.transpose()*caams::G(body1->rk_p)*caams::a_minus(a1_p);
-
+    // std::cout << "ScrewJoint_1::Body1ModifiedJacobian result:\n"
+    //           << result << std::endl;
     return result;
 }
 
@@ -1318,6 +1319,8 @@ Eigen::MatrixXd ScrewJoint_1::Body2ModifiedJacobian(void)
     result.tail<4>() =
             2*u1.transpose()*caams::G(body2->rk_p)*caams::a_minus(u2_p)
             +2*r1*a1.transpose()*caams::G(body2->rk_p)*caams::a_minus(s2_p);
+    // std::cout << "ScrewJoint_1::Body2ModifiedJacobian result:\n"
+    //           << result << std::endl;
 
     return result;
 }
@@ -1392,7 +1395,7 @@ Eigen::VectorXd ScrewJoint_1::ModifiedGamma(void)
             +2*r1*d_vec.transpose()*caams::G(body1->rk_p_dot)*caams::L(body1->rk_p_dot).transpose()*a1_p
             +2*r1*a1_dot.transpose()*d_vec_dot;
     Eigen::Matrix<double,1,1> r2dot_d;
-    r2dot_d << r2*d_dot;
+    r2dot_d << r2*d_dot*d_dot;
     Eigen::Matrix<double,1,1> gamma =
             -2*u2.transpose()*caams::G(body1->rk_p_dot)*caams::L(body1->rk_p_dot).transpose()*us_p
             -2*u2.transpose()*A1*caams::G(ps_dot)*caams::L(ps_dot).transpose()*u1_p
@@ -1402,6 +1405,8 @@ Eigen::VectorXd ScrewJoint_1::ModifiedGamma(void)
 
     result = gamma - r1ddot_d0 - r2dot_d;
 
+    // std::cout << "ScrewJoint_1::ModifiedGamma result:\n"
+    //           << result << std::endl;
     return result;
 }
 
