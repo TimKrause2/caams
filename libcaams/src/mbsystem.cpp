@@ -229,24 +229,6 @@ void System::Integrate(double dt)
 
     // Transfer the vector back to the state
     VectorToState(x);
-
- //    rkPhase1State(dt);
- //    rkSolve();
-    // rkPhase1Integrate();
-
- //    rkPhase2State(dt);
- //    rkSolve();
-    // rkPhase2Integrate();
-
- //    rkPhase3State(dt);
- //    rkSolve();
-    // rkPhase3Integrate();
-
- //    rkPhase4State(dt);
- //    rkSolve();
-    // rkPhase4Integrate();
-
-    // rkUpdateState(dt);
 }
 
 void System::Draw(void)
