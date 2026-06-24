@@ -17,10 +17,6 @@ public:
 	Eigen::Vector4d rk_p;
 	Eigen::Vector3d rk_r_dot;
 	Eigen::Vector4d rk_p_dot;
-	Eigen::Matrix3x4d k_r_dot;
-	Eigen::Matrix4d k_p_dot;
-	Eigen::Matrix3x4d k_r_ddot;
-	Eigen::Matrix4d k_p_ddot;
 
     int eqn_index;
     int p_index;

@@ -9,6 +9,10 @@
 #include <Eigen/Dense>
 #include <Eigen/SparseCore>
 #include <Eigen/SparseLU>
+#include <boost/numeric/odeint.hpp>
+
+using namespace boost::numeric::odeint;
+typedef std::vector< double > state_type;
 
 typedef Eigen::SparseMatrix<double> SpMat;
 typedef Eigen::VectorXd EVector;
@@ -59,24 +63,24 @@ public:
     void AddForce(ForceElement *force);
     void AddForceModifier(ForceModifierElement *force_modifier);
     void InitializeSolver(void);
-private:
+    void rkStateFromVector(const state_type &x);
+    void rkAccelerationVector(const state_type &x, state_type &dxdt);
+    void StateToVector(state_type &x);
+    void VectorToState(const state_type &x);
+    void StateToRkState(void);
+    void ConstraintReactions(void); // calculates the multipliers for the constraint reactions
     void rkSolve(void);
-
-    void rkPhase1State(double dt);
-    void rkPhase2State(double dt);
-    void rkPhase3State(double dt);
-    void rkPhase4State(double dt);
-
-	void rkPhase1Integrate(void);
-	void rkPhase2Integrate(void);
-	void rkPhase3Integrate(void);
-	void rkPhase4Integrate(void);
-
-	void rkUpdateState(double dt);
-public:
     void Integrate(double dt);
 
     void Draw(void);
+};
+
+class DxDt
+{
+    System &mbsystem;
+public:
+    void operator()(const state_type &x, state_type &dxdt, const double t);
+    DxDt(System &mbsystem);
 };
 
 #endif

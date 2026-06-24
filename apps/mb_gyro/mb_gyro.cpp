@@ -89,15 +89,17 @@ void display(void){
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
     glColor3f(1.0f,1.0f,1.0f);
-    mbsystem.Integrate(1/60.0);
 
     mbsystem.Draw();
 
     datumBody->Draw();
 
+    mbsystem.ConstraintReactions();
+
     // draw the constraint reaction forces and torques
     sphericalJoint->DrawReaction();
 
+    mbsystem.Integrate(1/60.0);
 
 
     glutSwapBuffers();

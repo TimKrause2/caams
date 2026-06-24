@@ -11,7 +11,6 @@ public:
     Body *body2;
     int N_eqn;
     int eqn_index;
-    Eigen::MatrixXd k_lambda;
     Eigen::VectorXd lambda;
     Constraint(
             Body *body1,
@@ -284,6 +283,7 @@ public:
     Eigen::Vector3d u2_p; // perpendicular normal in body2 space
     Eigen::Vector3d a1_p; // axis of rotation in body one space
     double beta;
+    double theta0;
     ScrewJoint_1(
             Body *body1,
             Body *body2,

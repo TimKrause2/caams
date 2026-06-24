@@ -212,186 +212,41 @@ void System::rkSolve(void)
 
 }
 
-void System::rkPhase1State(double dt)
-{
-    for(auto body:bodies){
-        body->rk_r = body->r;
-        body->rk_p = body->p;
-        body->rk_r_dot = body->r_dot;
-        body->rk_p_dot = body->p_dot;
-    }
-    for(auto dconst:dep_constraints){
-        dconst->rk_theta = dconst->theta;
-        dconst->rk_theta_dot = dconst->theta_dot;
-    }
-}
-
-void System::rkPhase2State(double dt)
-{
-    for(auto body:bodies){
-		body->rk_r = body->r + dt/2.0*body->k_r_dot.col(0);
-		body->rk_p = body->p + dt/2.0*body->k_p_dot.col(0);
-		body->rk_p.normalize();
-		body->rk_r_dot = body->r_dot + dt/2.0*body->k_r_ddot.col(0);
-		body->rk_p_dot = body->p_dot + dt/2.0*body->k_p_ddot.col(0);
-    }
-    for(auto dconst:dep_constraints){
-        dconst->rk_theta = dconst->theta + dt/2.0*dconst->k_theta_dot(0);
-        dconst->rk_theta_dot = dconst->theta_dot + dt/2.0*dconst->k_theta_ddot(0);
-    }
-}
-
-void System::rkPhase3State(double dt)
-{
-    for(auto body:bodies){
-		body->rk_r = body->r + dt/2.0*body->k_r_dot.col(1);
-		body->rk_p = body->p + dt/2.0*body->k_p_dot.col(1);
-		body->rk_p.normalize();
-		body->rk_r_dot = body->r_dot + dt/2.0*body->k_r_ddot.col(1);
-		body->rk_p_dot = body->p_dot + dt/2.0*body->k_p_ddot.col(1);
-    }
-    for(auto dconst:dep_constraints){
-        dconst->rk_theta = dconst->theta + dt/2.0*dconst->k_theta_dot(1);
-        dconst->rk_theta_dot = dconst->theta_dot + dt/2.0*dconst->k_theta_ddot(1);
-    }
-}
-
-void System::rkPhase4State(double dt)
-{
-    for(auto body:bodies){
-		body->rk_r = body->r + dt*body->k_r_dot.col(2);
-		body->rk_p = body->p + dt*body->k_p_dot.col(2);
-		body->rk_p.normalize();
-		body->rk_r_dot = body->r_dot + dt*body->k_r_ddot.col(2);
-		body->rk_p_dot = body->p_dot + dt*body->k_p_ddot.col(2);
-    }
-    for(auto dconst:dep_constraints){
-        dconst->rk_theta = dconst->theta + dt*dconst->k_theta_dot(2);
-        dconst->rk_theta_dot = dconst->theta_dot + dt*dconst->k_theta_ddot(2);
-    }
-}
-
-void System::rkPhase1Integrate(void)
-{
-    for(auto body:bodies){
-		body->k_r_dot.col(0) = body->rk_r_dot;
-		body->k_p_dot.col(0) = body->rk_p_dot;
-		body->k_r_ddot.col(0) = sp->x.segment<3>(body->eqn_index);
-		body->k_p_ddot.col(0) = sp->x.segment<4>(body->eqn_index+3);
-    }
-    for(auto constraint:constraints){
-        constraint->k_lambda.col(0) = sp->x.segment(constraint->eqn_index, constraint->N_eqn);
-    }
-    for(auto dconst:dep_constraints){
-        dconst->k_lambda.col(0) = sp->x.segment(dconst->eqn_index, dconst->N_eqn);
-        dconst->k_theta_dot(0) = dconst->rk_theta_dot;
-        dconst->k_theta_ddot(0) = sp->x(dconst->theta_eqn_index);
-    }
-}
-
-void System::rkPhase2Integrate(void)
-{
-    for(auto body:bodies){
-		body->k_r_dot.col(1) = body->rk_r_dot;
-		body->k_p_dot.col(1) = body->rk_p_dot;
-		body->k_r_ddot.col(1) = sp->x.segment<3>(body->eqn_index);
-		body->k_p_ddot.col(1) = sp->x.segment<4>(body->eqn_index+3);
-	}
-    for(auto constraint:constraints){
-        constraint->k_lambda.col(1) = sp->x.segment(constraint->eqn_index, constraint->N_eqn);
-    }
-    for(auto dconst:dep_constraints){
-        dconst->k_lambda.col(1) = sp->x.segment(dconst->eqn_index, dconst->N_eqn);
-        dconst->k_theta_dot(1) = dconst->rk_theta_dot;
-        dconst->k_theta_ddot(1) = sp->x(dconst->theta_eqn_index);
-    }
-}
-
-void System::rkPhase3Integrate(void)
-{
-    for(auto body:bodies){
-		body->k_r_dot.col(2) = body->rk_r_dot;
-		body->k_p_dot.col(2) = body->rk_p_dot;
-		body->k_r_ddot.col(2) = sp->x.segment<3>(body->eqn_index);
-		body->k_p_ddot.col(2) = sp->x.segment<4>(body->eqn_index+3);
-	}
-    for(auto constraint:constraints){
-        constraint->k_lambda.col(2) = sp->x.segment(constraint->eqn_index, constraint->N_eqn);
-    }
-    for(auto dconst:dep_constraints){
-        dconst->k_lambda.col(2) = sp->x.segment(dconst->eqn_index, dconst->N_eqn);
-        dconst->k_theta_dot(2) = dconst->rk_theta_dot;
-        dconst->k_theta_ddot(2) = sp->x(dconst->theta_eqn_index);
-    }
-}
-
-void System::rkPhase4Integrate(void)
-{
-    for(auto body:bodies){
-		body->k_r_dot.col(3) = body->rk_r_dot;
-		body->k_p_dot.col(3) = body->rk_p_dot;
-		body->k_r_ddot.col(3) = sp->x.segment<3>(body->eqn_index);
-		body->k_p_ddot.col(3) = sp->x.segment<4>(body->eqn_index+3);
-	}
-    for(auto constraint:constraints){
-        constraint->k_lambda.col(3) = sp->x.segment(constraint->eqn_index, constraint->N_eqn);
-    }
-    for(auto dconst:dep_constraints){
-        dconst->k_lambda.col(3) = sp->x.segment(dconst->eqn_index, dconst->N_eqn);
-        dconst->k_theta_dot(3) = dconst->rk_theta_dot;
-        dconst->k_theta_ddot(3) = sp->x(dconst->theta_eqn_index);
-    }
-}
-
-void System::rkUpdateState(double dt)
-{
-	Eigen::Vector4d c(1.0/6.0, 2.0/6.0, 2.0/6.0, 1.0/6.0);
-    for(auto constraint:constraints){
-        constraint->lambda = constraint->k_lambda*-c;
-    }
-    for(auto constraint:dep_constraints){
-        constraint->lambda = constraint->k_lambda*-c;
-    }
-    c*=dt;
-	for(auto body:bodies){
-		body->r += body->k_r_dot*c;
-		body->p += body->k_p_dot*c;
-		body->p.normalize();
-		body->r_dot += body->k_r_ddot*c;
-		body->p_dot += body->k_p_ddot*c;
-		double sigma = (body->p_dot.transpose()*body->p)(0);
-		body->p_dot -= sigma*body->p;
-        // Update rk_p for computing the Jacobian later on
-        // outside of the rk solver.
-        body->rk_p = body->p;
-    }
-    for(auto dconst:dep_constraints){
-        dconst->theta += dconst->k_theta_dot*c;
-        dconst->theta_dot += dconst->k_theta_ddot*c;
-    }
-}
-
 void System::Integrate(double dt)
 {
     if(!sp)return;
 
-    rkPhase1State(dt);
-    rkSolve();
-	rkPhase1Integrate();
+    // create the state vector
+    state_type x(bodies.size()*14);
 
-    rkPhase2State(dt);
-    rkSolve();
-	rkPhase2Integrate();
+    // Initailize the state vector
+    StateToVector(x);
 
-    rkPhase3State(dt);
-    rkSolve();
-	rkPhase3Integrate();
+    // Integrate using boost odeint
+    DxDt dxdt(*this);
+    runge_kutta4< state_type > rk4; // Stepper
+    integrate_const(rk4, dxdt, x, 0.0, dt, dt);
 
-    rkPhase4State(dt);
-    rkSolve();
-	rkPhase4Integrate();
+    // Transfer the vector back to the state
+    VectorToState(x);
 
-	rkUpdateState(dt);
+ //    rkPhase1State(dt);
+ //    rkSolve();
+    // rkPhase1Integrate();
+
+ //    rkPhase2State(dt);
+ //    rkSolve();
+    // rkPhase2Integrate();
+
+ //    rkPhase3State(dt);
+ //    rkSolve();
+    // rkPhase3Integrate();
+
+ //    rkPhase4State(dt);
+ //    rkSolve();
+    // rkPhase4Integrate();
+
+    // rkUpdateState(dt);
 }
 
 void System::Draw(void)
@@ -405,4 +260,114 @@ void System::Draw(void)
     for(auto force:forces){
         force->Draw();
     }
+}
+
+void System::rkStateFromVector(const state_type &x_raw)
+{
+    // Map x into an Eigen vector
+    Eigen::Map<const Eigen::VectorXd> x(x_raw.data(), x_raw.size());
+
+    int b_index = 0;
+    for(auto &body:bodies){
+        int offset = b_index*14;
+        body->rk_r = x.segment<3>(offset);
+        body->rk_p = x.segment<4>(offset+3);
+        body->rk_p.normalize();
+        body->rk_r_dot = x.segment<3>(offset+7);
+        body->rk_p_dot = x.segment<4>(offset+10);
+        b_index++;
+    }
+}
+
+void System::rkAccelerationVector(const state_type &x_raw, state_type &dxdt_raw)
+{
+    // Map the inputs into Eigen vectors
+    Eigen::Map<const Eigen::VectorXd> x(x_raw.data(), x_raw.size());
+    Eigen::Map<Eigen::VectorXd> dxdt(dxdt_raw.data(), dxdt_raw.size());
+    int b_index=0;
+    for(auto &body:bodies){
+        int offset = b_index*14;
+        // extract the accelerations from the solution
+        Eigen::Matrix<double,7,1> q_ddot = sp->x.segment<7>(body->eqn_index);
+        // extranct the velocity from x
+        Eigen::Matrix<double,7,1> q_dot = x.segment<7>(offset+7);
+        // update dxdt
+        dxdt.segment<7>(offset) = q_dot;
+        dxdt.segment<7>(offset+7) = q_ddot;
+        b_index++;
+    }
+}
+
+void System::StateToVector(state_type &x_raw)
+{
+    Eigen::Map<Eigen::VectorXd> x(x_raw.data(), x_raw.size());
+    int b_index=0;
+    for(auto &body:bodies){
+        int offset = b_index*14;
+        x.segment<3>(offset) = body->r;
+        x.segment<4>(offset+3) = body->p;
+        x.segment<3>(offset+7) = body->r_dot;
+        x.segment<4>(offset+10) = body->p_dot;
+        b_index++;
+    }
+}
+
+void System::VectorToState(const state_type &x_raw)
+{
+    Eigen::Map<const Eigen::VectorXd> x(x_raw.data(), x_raw.size());
+    int b_index = 0;
+    for(auto &body:bodies){
+        int offset = b_index*14;
+        body->r = x.segment<3>(offset);
+        body->p = x.segment<4>(offset+3);
+        body->p.normalize();
+        body->r_dot = x.segment<3>(offset+7);
+        body->p_dot = x.segment<4>(offset+10);
+        double sigma = body->p.dot(body->p_dot);
+        body->p_dot -= sigma*body->p;
+        b_index++;
+    }
+}
+
+void System::StateToRkState(void)
+{
+    for(auto &body:bodies){
+        body->rk_r = body->r;
+        body->rk_p = body->p;
+        body->rk_r_dot = body->r_dot;
+        body->rk_p_dot = body->p_dot;
+    }
+}
+
+void System::ConstraintReactions(void)
+{
+    // transfer the current state to the rk state
+    StateToRkState();
+
+    // solve for the multipliers
+    rkSolve();
+
+    // transfer the results to the constraints
+    for(auto &constraint:constraints){
+        constraint->lambda = sp->x.segment(
+                    constraint->eqn_index,
+                    constraint->N_eqn);
+    }
+}
+
+DxDt::DxDt(System &mbsystem):
+    mbsystem(mbsystem)
+{
+}
+
+void DxDt::operator()(const state_type &x, state_type &dxdt, const double t)
+{
+    // Transfer the state from x to the rk variables
+    mbsystem.rkStateFromVector(x);
+
+    // Solve for the accelerations
+    mbsystem.rkSolve();
+
+    // Transfer the derivatives to dxdt
+    mbsystem.rkAccelerationVector(x, dxdt);
 }

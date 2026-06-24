@@ -66,7 +66,7 @@ void init_system(void)
 
     screwJoint = new ScrewJoint_1(
                 datumBody, massBody,
-                s1_p, s2_p, u1_p, u2_p, a1_p,
+                s1B_p, s2B_p, u1_p, u2_p, a1_p,
                 BETA_SCREW);
 
 	gravity = new SystemGravityForce(

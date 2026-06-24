@@ -19,7 +19,6 @@ Constraint::Constraint(
     body2(body2),
     N_eqn(N_eqn)
 {
-    k_lambda.resize(N_eqn, 4);
     lambda.resize(N_eqn);
 }
 
@@ -1236,6 +1235,12 @@ ScrewJoint_1::ScrewJoint_1(
     a1_p(a1_p),
     beta(beta)
 {
+    Eigen::Matrix3d A1 = caams::Ap(body1->rk_p);
+    Eigen::Matrix3d A2 = caams::Ap(body2->rk_p);
+    Eigen::Vector3d d_vec = body2->rk_r + A1*s1_p - body1->rk_r - A2*s2_p;
+    Eigen::Vector3d a1 = A1*a1_p;
+    double d = a1.dot(d_vec);
+    theta0 = beta*d;
 }
 
 Eigen::MatrixXd ScrewJoint_1::Body1Jacobian(void)
@@ -1372,11 +1377,11 @@ Eigen::VectorXd ScrewJoint_1::ModifiedGamma(void)
     double d = a1.dot(d_vec);
     double d_dot = a1.dot(d_vec_dot) + d_vec.dot(a1_dot);
     Eigen::Vector4d ps;
-    ps << cos(beta/2.0*d), a1_p*sin(beta/2.0*d);
+    ps << cos(beta/2.0*d-theta0), a1_p*sin(beta/2.0*d-theta0);
     Eigen::Vector4d k1;
-    k1 << -beta/2.0*sin(beta/2*d), a1_p*beta/2*cos(beta/2*d);
+    k1 << -beta/2.0*sin(beta/2*d-theta0), a1_p*beta/2*cos(beta/2*d-theta0);
     Eigen::Vector4d k2;
-    k2 << -beta*beta/4*cos(beta/2*d), -a1_p*beta*beta/4*sin(beta/2*d);
+    k2 << -beta*beta/4*cos(beta/2*d-theta0), -a1_p*beta*beta/4*sin(beta/2*d-theta0);
     Eigen::Vector4d ps_dot = k1*d_dot;
     Eigen::Matrix3d As = caams::Ap(ps);
     Eigen::Matrix3d As_dot = caams::A_dot(ps, ps_dot);
