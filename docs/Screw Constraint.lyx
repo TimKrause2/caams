@@ -109,6 +109,10 @@ Screw Constraint
 Timothy Krause
 \end_layout
 
+\begin_layout Address
+tmkrs4482@gmail.com
+\end_layout
+
 \begin_layout Standard
 June 20,
  2026
@@ -118,7 +122,7 @@ June 20,
 Introduction
 \end_layout
 
-\begin_layout Paragraph
+\begin_layout Standard
 This screw constraint models the translation and rotation simultaneously.
  The model starts with a normal constraint of two direction vectors.
  One vector is constant and embedded in body 2.
@@ -128,7 +132,7 @@ This screw constraint models the translation and rotation simultaneously.
  for a final single degree of freedom.
 \end_layout
 
-\begin_layout Paragraph*
+\begin_layout Standard
 Inspiration for developing the constraint came from the book 
 \begin_inset CommandInset citation
 LatexCommand cite
@@ -145,9 +149,9 @@ literal "false"
 Derivation
 \end_layout
 
-\begin_layout Paragraph
-To find the modified Jacobian and modified gamma of the constraint function is differentiated twice with respect to time.
- The main constraint function:
+\begin_layout Standard
+To find the modified Jacobian and modified gamma the constraint function is differentiated twice with respect to time.
+ The main constraint function and its second derivative:
 \begin_inset Formula 
 \[
 \mathbf{\Phi}=\mathbf{u}^{T}_{i}\mathbf{u}_{j}=\mathbf{0}
@@ -227,7 +231,8 @@ is a rotation matrix that is dependent on the distance between the two bodies an
 \begin_inset Formula $\mathbf{p}_{s}$
 \end_inset
 
-which is defined as follows:
+,
+ which is defined as follows:
 \begin_inset Formula 
 \[
 \mathbf{p}_{s}=\left[\begin{array}{c}
@@ -255,7 +260,7 @@ which is defined as follows:
 \ddot{\mathbf{p}}_{s}=\left[\begin{array}{c}
 -\frac{\beta}{2}\sin\left(\frac{\beta}{2}l\right)\ddot{l}-\frac{\beta^{2}}{4}\cos\left(\frac{\beta}{2}l\right)\dot{l}^{2}\\
 \frac{\beta}{2}\cos\left(\frac{\beta}{2}l\right)\ddot{l}\mathbf{a}^{,}_{i}-\frac{\beta^{2}}{4}\sin\left(\frac{\beta}{2}l\right)\dot{l}^{2}\mathbf{a}^{,}_{i}
-\end{array}\right]=\mathbf{k}_{1}\ddot{l}+\mathbf{k}_{2}\dot{l}^{2}
+\end{array}\right]=\mathbf{k}_{1}\ddot{l}+\mathbf{k}_{2}\dot{l}^{2}\label{eq:p_s_ddot}
 \end{equation}
 
 \end_inset
@@ -357,7 +362,7 @@ Both
 
 \end_layout
 
-\begin_layout Paragraph
+\begin_layout Standard
 Now to compose the equations.
  Equation 
 \begin_inset CommandInset ref
@@ -447,7 +452,19 @@ Rearranging to find the acceleration equation and collecting the constant terms 
 \begin_inset Formula $\ddot{\mathbf{p}}_{s}$
 \end_inset
 
-is a function of the distance so the corresponding term is expanded.
+is a function of the distance so the corresponding term is expanded with equation 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:p_s_ddot"
+plural "false"
+caps "false"
+noprefix "false"
+nolink "false"
+tuple "list"
+
+\end_inset
+
+.
 \begin_inset Formula 
 \begin{equation}
 2\mathbf{u}^{T}_{j}\mathbf{A}_{i}\mathbf{G}_{s}\overset{-}{\mathbf{u}^{,}_{i}}\ddot{\mathbf{p}}_{s}=\mathbf{M}\left(\mathbf{k}_{1}\ddot{l}+\mathbf{k}_{2}\dot{l}^{2}\right)=m_{1}\ddot{l}+m_{2}\dot{l}^{2}\label{eq:p_s_term}
@@ -493,14 +510,26 @@ tuple "list"
 
  is used to find the relationship with the accelerations.
 \begin_inset Formula 
-\begin{align*}
-m_{1}\ddot{l} & =m_{1}\mathbf{a}^{T}_{i}\ddot{\mathbf{r}}_{j}+2m_{1}\mathbf{a}^{T}_{i}\dot{\mathbf{G}}_{j}\dot{\mathbf{L}}^{T}_{j}\mathbf{s}^{,}_{j}+2m_{1}\mathbf{a}^{T}_{i}\mathbf{G}_{j}\overset{-}{\mathbf{s}^{,}_{j}}\ddot{\mathbf{p}}_{j}-m_{1}\mathbf{a}^{T}_{i}\ddot{\mathbf{r}}_{i}-2m_{1}\mathbf{a}^{T}_{i}\dot{\mathbf{G}}_{i}\dot{\mathbf{L}}^{T}_{i}\mathbf{s}^{,}_{i}\\
- & -2m_{1}\mathbf{a}^{T}_{i}\mathbf{G}_{i}\overset{-}{\mathbf{s}^{,}_{i}}\ddot{\mathbf{p}_{i}}+2m_{1}\mathbf{d}^{T}\dot{\mathbf{G}}_{i}\dot{\mathbf{L}}^{T}_{i}\mathbf{a}^{,}_{i}+2m_{1}\mathbf{d}^{T}\mathbf{G}_{i}\overset{-}{\mathbf{a}^{,}_{i}}\ddot{\mathbf{p}}_{i}+2m_{1}\dot{\mathbf{d}}^{T}\dot{\mathbf{a}}_{i}
-\end{align*}
+\begin{align}
+m_{1}\ddot{l} & =m_{1}\mathbf{a}^{T}_{i}\ddot{\mathbf{r}}_{j}+2m_{1}\mathbf{a}^{T}_{i}\dot{\mathbf{G}}_{j}\dot{\mathbf{L}}^{T}_{j}\mathbf{s}^{,}_{j}+2m_{1}\mathbf{a}^{T}_{i}\mathbf{G}_{j}\overset{-}{\mathbf{s}^{,}_{j}}\ddot{\mathbf{p}}_{j}-m_{1}\mathbf{a}^{T}_{i}\ddot{\mathbf{r}}_{i}-2m_{1}\mathbf{a}^{T}_{i}\dot{\mathbf{G}}_{i}\dot{\mathbf{L}}^{T}_{i}\mathbf{s}^{,}_{i}\nonumber \\
+ & -2m_{1}\mathbf{a}^{T}_{i}\mathbf{G}_{i}\overset{-}{\mathbf{s}^{,}_{i}}\ddot{\mathbf{p}_{i}}+2m_{1}\mathbf{d}^{T}\dot{\mathbf{G}}_{i}\dot{\mathbf{L}}^{T}_{i}\mathbf{a}^{,}_{i}+2m_{1}\mathbf{d}^{T}\mathbf{G}_{i}\overset{-}{\mathbf{a}^{,}_{i}}\ddot{\mathbf{p}}_{i}+2m_{1}\dot{\mathbf{d}}^{T}\dot{\mathbf{a}}_{i}\label{eq:m1_l_ddot}
+\end{align}
 
 \end_inset
 
-The Jacobians from this equation are found to be:
+The Jacobians from equation 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:m1_l_ddot"
+plural "false"
+caps "false"
+noprefix "false"
+nolink "false"
+tuple "list"
+
+\end_inset
+
+ are found to be:
 \begin_inset Formula 
 \begin{align*}
 \left(m_{1}\ddot{l}\right)_{\mathbf{r}_{i}} & =-m_{1}\mathbf{a}^{T}_{i}\\
@@ -595,6 +624,28 @@ And finally the acceleration equation for the screw constraint.
 \end_inset
 
 
+\end_layout
+
+\begin_layout Section*
+Implementation
+\end_layout
+
+\begin_layout Standard
+These equations have been used to model a mass falling under the force of gravity subject to the screw constraint and a spring.
+ A c++ library incorporating the concepts in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "nikravesh1988computer"
+literal "false"
+
+\end_inset
+
+ was developed and used to test the equations.
+ A git repository is at:
+\end_layout
+
+\begin_layout Address
+https://github.com/TimKrause2/caams
 \end_layout
 
 \begin_layout Standard
