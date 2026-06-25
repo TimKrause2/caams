@@ -1,0 +1,614 @@
+#LyX 2.5 created this file. For more info see https://www.lyx.org/
+\lyxformat 643
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass paper
+\use_default_options true
+\maintain_unincluded_children no
+\language canadian
+\language_package default
+\inputencoding utf8
+\fontencoding auto
+\font_roman "lmodern" "default"
+\font_sans "kurierl" "Ubuntu Sans"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family sfdefault
+\use_non_tex_fonts false
+\font_sc false
+\font_roman_osf false
+\font_sans_osf false
+\font_typewriter_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\float_placement class
+\float_alignment class
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification default
+\crossref_package refstyle
+\use_formatted_ref 0
+\use_minted 0
+\use_lineno 0
+\backgroundcolor white
+\fontcolor black
+\notefontcolor lightgray
+\boxbgcolor red
+\table_border_color default
+\table_odd_row_color default
+\table_even_row_color default
+\table_alt_row_colors_start 1
+\index Index
+\shortcut idx
+\color #008080
+\end_index
+\leftmargin 2cm
+\topmargin 2cm
+\rightmargin 2cm
+\bottommargin 2cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tablestyle default
+\tracking_changes false
+\output_changes false
+\change_bars false
+\postpone_fragile_content true
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\docbook_table_output 0
+\docbook_mathml_prefix 1
+\docbook_mathml_version 0
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Screw Constraint
+\end_layout
+
+\begin_layout Author
+Timothy Krause
+\end_layout
+
+\begin_layout Standard
+June 20,
+ 2026
+\end_layout
+
+\begin_layout Section*
+Introduction
+\end_layout
+
+\begin_layout Paragraph
+This screw constraint models the translation and rotation simultaneously.
+ The model starts with a normal constraint of two direction vectors.
+ One vector is constant and embedded in body 2.
+ The other vector rotates by an angle that is linearly dependent on the distance between two points embedded in the bodies on the axis of rotation.
+ This constraint is meant to be used with other constraints that maintain a parallel axis,
+ the cylindrical constraint,
+ for a final single degree of freedom.
+\end_layout
+
+\begin_layout Paragraph*
+Inspiration for developing the constraint came from the book 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "nikravesh1988computer"
+literal "false"
+
+\end_inset
+
+.
+ The notation formatting and symbols are from the book.
+\end_layout
+
+\begin_layout Section*
+Derivation
+\end_layout
+
+\begin_layout Paragraph
+To find the modified Jacobian and modified gamma of the constraint function is differentiated twice with respect to time.
+ The main constraint function:
+\begin_inset Formula 
+\[
+\mathbf{\Phi}=\mathbf{u}^{T}_{i}\mathbf{u}_{j}=\mathbf{0}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+\ddot{\mathbf{\Phi}}=\mathbf{u}^{T}_{j}\ddot{\mathbf{u}}_{i}+\mathbf{u}^{T}_{i}\ddot{\mathbf{u}}_{j}+2\dot{\mathbf{u}}^{T}_{i}\dot{\mathbf{u}}_{j}=\mathbf{0}\label{eq:phi_derivative}
+\end{equation}
+
+\end_inset
+
+These global vectors can be expressed in terms of vectors embedded in the bodies:
+\begin_inset Formula 
+\[
+\mathbf{u}_{i}=\mathbf{A}_{i}\mathbf{A}_{s}\mathbf{u}^{,}_{i}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\dot{\mathbf{u}}_{i}=\left(\dot{\mathbf{A}}_{i}\mathbf{A}_{s}+\mathbf{A}_{i}\dot{\mathbf{A}}_{s}\right)\mathbf{u}^{,}_{i}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\ddot{\mathbf{u}}_{i}=\ddot{\mathbf{A}}_{i}\mathbf{A}_{s}\mathbf{u}^{,}_{i}+\mathbf{A}_{i}\ddot{\mathbf{A}}_{s}\mathbf{u}^{,}_{i}+2\dot{\mathbf{A}}_{i}\dot{\mathbf{A}}_{s}\mathbf{u}^{,}_{i}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+=\ddot{\mathbf{A}}_{i}\mathbf{u}^{,}_{s}+\mathbf{A}_{i}\ddot{\mathbf{A}}_{s}\mathbf{u}^{,}_{i}+2\dot{\mathbf{A}}_{i}\dot{\mathbf{A}}_{s}\mathbf{u}^{,}_{i}\label{eq:u_i_derivative}
+\end{equation}
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\mathbf{u}_{j}=\mathbf{A}_{j}\mathbf{u}^{,}_{j}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\dot{\mathbf{u}}_{j}=\dot{\mathbf{A}}_{j}\mathbf{u}^{,}_{j}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+\ddot{\mathbf{u}}_{j}=\ddot{\mathbf{A}}_{j}\mathbf{u}^{,}_{j}\label{eq:u_j_derivative}
+\end{equation}
+
+\end_inset
+
+
+\begin_inset Formula $\mathbf{A}_{s}$
+\end_inset
+
+is a rotation matrix that is dependent on the distance between the two bodies and is generated from 
+\begin_inset Formula $\mathbf{p}_{s}$
+\end_inset
+
+which is defined as follows:
+\begin_inset Formula 
+\[
+\mathbf{p}_{s}=\left[\begin{array}{c}
+\cos\left(\frac{\beta}{2}l\right)\\
+\sin\left(\frac{\beta}{2}l\right)\mathbf{a}^{,}_{i}
+\end{array}\right]
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\dot{\mathbf{p}}_{s}=\left[\begin{array}{c}
+-\frac{\beta}{2}\sin\left(\frac{\beta}{2}l\right)\dot{l}\\
+\frac{\beta}{2}\cos\left(\frac{\beta}{2}l\right)\dot{l}\mathbf{a}^{,}_{i}
+\end{array}\right]=\mathbf{k}_{1}\dot{l}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+\ddot{\mathbf{p}}_{s}=\left[\begin{array}{c}
+-\frac{\beta}{2}\sin\left(\frac{\beta}{2}l\right)\ddot{l}-\frac{\beta^{2}}{4}\cos\left(\frac{\beta}{2}l\right)\dot{l}^{2}\\
+\frac{\beta}{2}\cos\left(\frac{\beta}{2}l\right)\ddot{l}\mathbf{a}^{,}_{i}-\frac{\beta^{2}}{4}\sin\left(\frac{\beta}{2}l\right)\dot{l}^{2}\mathbf{a}^{,}_{i}
+\end{array}\right]=\mathbf{k}_{1}\ddot{l}+\mathbf{k}_{2}\dot{l}^{2}
+\end{equation}
+
+\end_inset
+
+where 
+\begin_inset Formula $\beta$
+\end_inset
+
+ is the inverse of the pitch rate,
+ defined as radians of rotation per unit length.
+ Here 
+\begin_inset Formula $\mathbf{a}^{,}_{i}$
+\end_inset
+
+ is a unit vector pointing in the direction of the axis and 
+\begin_inset Formula $l$
+\end_inset
+
+ is the distance between the axis points of the bodies and is defined as follows:
+\begin_inset Formula 
+\[
+l=\mathbf{a}^{T}_{i}\mathbf{d}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\dot{l}=\mathbf{a}^{T}_{i}\dot{\mathbf{d}}+\mathbf{d}^{T}\dot{\mathbf{a}}_{i}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+\ddot{l}=\mathbf{a}^{T}_{i}\ddot{\mathbf{d}}+\mathbf{d}^{T}\ddot{\mathbf{a}}_{i}+2\dot{\mathbf{d}}^{T}\dot{\mathbf{a}}_{i}\label{eq:l_ddot}
+\end{equation}
+
+\end_inset
+
+Both 
+\begin_inset Formula $\mathbf{d}$
+\end_inset
+
+ and 
+\begin_inset Formula $\mathbf{a}_{i}$
+\end_inset
+
+ are given by:
+\begin_inset Formula 
+\[
+\mathbf{d}=\mathbf{r}_{j}+\mathbf{A}_{j}\mathbf{s}^{,}_{j}-\mathbf{r}_{i}-\mathbf{A}_{i}\mathbf{s}^{,}_{i}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\dot{\mathbf{d}}=\dot{\mathbf{r}}_{j}+\dot{\mathbf{A}}_{j}\mathbf{s}^{,}_{j}-\dot{\mathbf{r}}_{i}-\dot{\mathbf{A}}_{i}\mathbf{s}^{,}_{i}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+\ddot{\mathbf{d}}=\ddot{\mathbf{r}}_{j}+\ddot{\mathbf{A}}_{j}\mathbf{s}^{,}_{j}-\ddot{\mathbf{r}}_{i}-\ddot{\mathbf{A}}_{i}\mathbf{s}^{,}_{i}\label{eq:d_ddpt}
+\end{equation}
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\mathbf{a}_{i}=\mathbf{A}_{i}\mathbf{a}^{,}_{i}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\dot{\mathbf{a}}_{i}=\dot{\mathbf{A}}_{i}\mathbf{a}^{,}_{i}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+\ddot{\mathbf{a}}_{i}=\ddot{\mathbf{A}}_{i}\mathbf{a}^{,}_{i}\label{eq:a_ddot}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph
+Now to compose the equations.
+ Equation 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:u_i_derivative"
+plural "false"
+caps "false"
+noprefix "false"
+nolink "false"
+tuple "list"
+
+\end_inset
+
+ and equation 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:u_j_derivative"
+plural "false"
+caps "false"
+noprefix "false"
+nolink "false"
+tuple "list"
+
+\end_inset
+
+ are inserted into equation 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:phi_derivative"
+plural "false"
+caps "false"
+noprefix "false"
+nolink "false"
+tuple "list"
+
+\end_inset
+
+:
+\begin_inset Formula 
+\[
+\ddot{\mathbf{\Phi}}=\mathbf{u}^{T}_{j}\ddot{\mathbf{A}}_{i}\mathbf{u}^{,}_{s}+\mathbf{u}^{T}_{j}\mathbf{A}_{i}\ddot{\mathbf{A}}_{s}\mathbf{u}^{,}_{i}+2\mathbf{u}^{T}_{j}\dot{\mathbf{A}}_{i}\dot{\mathbf{A}}_{s}\mathbf{u}^{,}_{i}+\mathbf{u}^{T}_{i}\ddot{\mathbf{A}}_{j}\mathbf{u}^{,}_{j}+2\dot{\mathbf{u}}^{T}_{i}\dot{\mathbf{u}}_{j}
+\]
+
+\end_inset
+
+To isolate the accelerations of the Euler parameters an equation from the book is used:
+\begin_inset Formula 
+\begin{equation}
+\ddot{\mathbf{A}}\mathbf{u}=2\dot{\mathbf{G}}\dot{\mathbf{L}}^{T}\mathbf{u}+2\mathbf{G}\overset{-}{\mathbf{u}}\ddot{\mathbf{p}}\label{eq:from_the_book}
+\end{equation}
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\ddot{\mathbf{\Phi}}=2\mathbf{u}^{T}_{j}\dot{\mathbf{G}}_{i}\dot{\mathbf{L}}^{T}_{i}\mathbf{u}^{,}_{s}+2\mathbf{u}^{T}_{j}\mathbf{G}_{i}\overset{-}{\mathbf{u}^{,}_{s}}\ddot{\mathbf{p}}_{i}+2\mathbf{u}^{T}_{j}\mathbf{A}_{i}\dot{\mathbf{G}}_{s}\dot{\mathbf{L}}^{T}_{s}\mathbf{u}^{,}_{i}+2\mathbf{u}^{T}_{j}\mathbf{A}_{i}\mathbf{G}_{s}\overset{-}{\mathbf{u}^{,}_{i}}\ddot{\mathbf{p}}_{s}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
++2\mathbf{u}^{T}_{j}\dot{\mathbf{A}}_{i}\dot{\mathbf{A}}_{s}\mathbf{u}^{,}_{i}+2\mathbf{u}^{T}_{i}\dot{\mathbf{G}}_{j}\dot{\mathbf{L}}^{T}_{j}\mathbf{u}^{,}_{j}+2\mathbf{u}^{T}_{i}\mathbf{G}_{j}\overset{-}{\mathbf{u}^{,}_{j}}\ddot{\mathbf{p}}_{j}+2\dot{\mathbf{u}}^{T}_{i}\dot{\mathbf{u}}_{j}
+\]
+
+\end_inset
+
+Rearranging to find the acceleration equation and collecting the constant terms on the right hand side.
+\begin_inset Formula 
+\begin{equation}
+2\mathbf{u}^{T}_{j}\mathbf{G}_{i}\overset{-}{\mathbf{u}^{,}_{s}}\ddot{\mathbf{p}}_{i}+2\mathbf{u}^{T}_{i}\mathbf{G}_{j}\overset{-}{\mathbf{u}^{,}_{j}}\ddot{\mathbf{p}}_{j}+2\mathbf{u}^{T}_{j}\mathbf{A}_{i}\mathbf{G}_{s}\overset{-}{\mathbf{u}^{,}_{i}}\ddot{\mathbf{p}}_{s}=\boldsymbol{\gamma}\label{eq:acceleration_equation}
+\end{equation}
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\boldsymbol{\gamma=-}2\mathbf{u}^{T}_{j}\dot{\mathbf{G}}_{i}\dot{\mathbf{L}}^{T}_{i}\mathbf{u}^{,}_{s}-2\mathbf{u}^{T}_{j}\mathbf{A}_{i}\dot{\mathbf{G}}_{s}\dot{\mathbf{L}}^{T}_{s}\mathbf{u}^{,}_{i}-2\mathbf{u}^{T}_{i}\dot{\mathbf{G}}_{j}\dot{\mathbf{L}}^{T}_{j}\mathbf{u}^{,}_{j}-2\mathbf{u}^{T}_{j}\dot{\mathbf{A}}_{i}\dot{\mathbf{A}}_{s}\mathbf{u}^{,}_{i}-2\dot{\mathbf{u}}^{T}_{i}\dot{\mathbf{u}}_{j}
+\]
+
+\end_inset
+
+
+\begin_inset Formula $\ddot{\mathbf{p}}_{s}$
+\end_inset
+
+is a function of the distance so the corresponding term is expanded.
+\begin_inset Formula 
+\begin{equation}
+2\mathbf{u}^{T}_{j}\mathbf{A}_{i}\mathbf{G}_{s}\overset{-}{\mathbf{u}^{,}_{i}}\ddot{\mathbf{p}}_{s}=\mathbf{M}\left(\mathbf{k}_{1}\ddot{l}+\mathbf{k}_{2}\dot{l}^{2}\right)=m_{1}\ddot{l}+m_{2}\dot{l}^{2}\label{eq:p_s_term}
+\end{equation}
+
+\end_inset
+
+
+\begin_inset Formula $m_{1}\ddot{l}$
+\end_inset
+
+ is expanded with the help of Equations 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:l_ddot,eq:d_ddpt,eq:a_ddot"
+plural "false"
+caps "false"
+noprefix "false"
+nolink "false"
+tuple "list"
+
+\end_inset
+
+.
+\begin_inset Formula 
+\begin{align*}
+m_{1}\ddot{l} & =m_{1}\left(\mathbf{a}^{T}_{i}\ddot{\mathbf{r}}_{j}+\mathbf{a}^{T}_{i}\ddot{\mathbf{A}}_{j}\mathbf{s}^{,}_{j}-\mathbf{a}^{T}_{i}\ddot{\mathbf{r}}_{i}-\mathbf{a}^{T}_{i}\ddot{\mathbf{A}}_{i}\mathbf{s}^{,}_{i}+\mathbf{d}^{T}\ddot{\mathbf{A}}_{i}\mathbf{a}^{,}_{i}+2\dot{\mathbf{d}}^{T}\dot{\mathbf{a}}_{i}\right)
+\end{align*}
+
+\end_inset
+
+Again Equation 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:from_the_book"
+plural "false"
+caps "false"
+noprefix "false"
+nolink "false"
+tuple "list"
+
+\end_inset
+
+ is used to find the relationship with the accelerations.
+\begin_inset Formula 
+\begin{align*}
+m_{1}\ddot{l} & =m_{1}\mathbf{a}^{T}_{i}\ddot{\mathbf{r}}_{j}+2m_{1}\mathbf{a}^{T}_{i}\dot{\mathbf{G}}_{j}\dot{\mathbf{L}}^{T}_{j}\mathbf{s}^{,}_{j}+2m_{1}\mathbf{a}^{T}_{i}\mathbf{G}_{j}\overset{-}{\mathbf{s}^{,}_{j}}\ddot{\mathbf{p}}_{j}-m_{1}\mathbf{a}^{T}_{i}\ddot{\mathbf{r}}_{i}-2m_{1}\mathbf{a}^{T}_{i}\dot{\mathbf{G}}_{i}\dot{\mathbf{L}}^{T}_{i}\mathbf{s}^{,}_{i}\\
+ & -2m_{1}\mathbf{a}^{T}_{i}\mathbf{G}_{i}\overset{-}{\mathbf{s}^{,}_{i}}\ddot{\mathbf{p}_{i}}+2m_{1}\mathbf{d}^{T}\dot{\mathbf{G}}_{i}\dot{\mathbf{L}}^{T}_{i}\mathbf{a}^{,}_{i}+2m_{1}\mathbf{d}^{T}\mathbf{G}_{i}\overset{-}{\mathbf{a}^{,}_{i}}\ddot{\mathbf{p}}_{i}+2m_{1}\dot{\mathbf{d}}^{T}\dot{\mathbf{a}}_{i}
+\end{align*}
+
+\end_inset
+
+The Jacobians from this equation are found to be:
+\begin_inset Formula 
+\begin{align*}
+\left(m_{1}\ddot{l}\right)_{\mathbf{r}_{i}} & =-m_{1}\mathbf{a}^{T}_{i}\\
+\left(m_{1}\ddot{l}\right)_{\mathbf{p}_{i}} & =-2m_{1}\mathbf{a}^{T}_{i}\mathbf{G}_{i}\overset{-}{\mathbf{s}^{,}_{i}}+2m_{1}\mathbf{d}^{T}\mathbf{G}_{i}\overset{-}{\mathbf{a}^{,}_{i}}\\
+\left(m_{1}\ddot{l}\right)_{\mathbf{r}_{j}} & =m_{1}\mathbf{a}^{T}_{i}\\
+\left(m_{1}\ddot{l}\right)_{\mathbf{p}_{j}} & =2m_{1}\mathbf{a}^{T}_{i}\mathbf{G}_{j}\overset{-}{\mathbf{s}^{,}_{j}}
+\end{align*}
+
+\end_inset
+
+The acceleration equation 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:p_s_term"
+plural "false"
+caps "false"
+noprefix "false"
+nolink "false"
+tuple "list"
+
+\end_inset
+
+ can be represented in matrix form:
+\begin_inset Formula 
+\[
+\left[\begin{array}{cccc}
+\left(m_{1}\ddot{l}\right)_{\mathbf{r}_{i}} & \left(m_{1}\ddot{l}\right)_{\mathbf{p}_{i}} & \left(m_{1}\ddot{l}\right)_{\mathbf{r}_{j}} & \left(m_{1}\ddot{l}\right)_{\mathbf{p}_{j}}\end{array}\right]\left[\begin{array}{c}
+\ddot{\mathbf{r}}_{i}\\
+\ddot{\mathbf{p}}_{i}\\
+\ddot{\mathbf{r}}_{j}\\
+\ddot{\mathbf{p}}_{j}
+\end{array}\right]=\boldsymbol{\gamma}^{l}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\boldsymbol{\gamma}^{l}=-2m_{1}\mathbf{a}^{T}_{i}\dot{\mathbf{G}}_{j}\dot{\mathbf{L}}^{T}_{j}\mathbf{s}^{,}_{j}+2m_{1}\mathbf{a}^{T}_{i}\dot{\mathbf{G}}_{i}\dot{\mathbf{L}}^{T}_{i}\mathbf{s}^{,}_{i}-2m_{1}\mathbf{d}^{T}\dot{\mathbf{G}}_{i}\dot{\mathbf{L}}^{T}_{i}\mathbf{a}^{,}_{i}-2m_{1}\dot{\mathbf{d}}^{T}\dot{\mathbf{a}}_{i}-m_{2}\dot{l}^{2}
+\]
+
+\end_inset
+
+ The Jacobians from equation 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:p_s_term"
+plural "false"
+caps "false"
+noprefix "false"
+nolink "false"
+tuple "list"
+
+\end_inset
+
+ are included with the Jacobians from equation 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:acceleration_equation"
+plural "false"
+caps "false"
+noprefix "false"
+nolink "false"
+tuple "list"
+
+\end_inset
+
+ to yield the Jacobians for the constraint:
+\begin_inset Formula 
+\begin{align*}
+\boldsymbol{\Phi}_{\mathbf{r}_{i}} & =-m_{1}\mathbf{a}^{T}_{i}\\
+\boldsymbol{\Phi}_{\mathbf{p}_{i}} & =-2m_{1}\mathbf{a}^{T}_{i}\mathbf{G}_{i}\overset{-}{\mathbf{s}^{,}_{i}}+2m_{1}\mathbf{d}^{T}\mathbf{G}_{i}\overset{-}{\mathbf{a}^{,}_{i}}+2\mathbf{u}^{T}_{j}\mathbf{G}_{i}\overset{-}{\mathbf{u}^{,}_{s}}\\
+\boldsymbol{\Phi}_{\mathbf{r}_{j}} & =m_{1}\mathbf{a}^{T}_{i}\\
+\boldsymbol{\Phi}_{\mathbf{p}_{j}} & =2m_{1}\mathbf{a}^{T}_{i}\mathbf{G}_{j}\overset{-}{\mathbf{s}^{,}_{j}}+2\mathbf{u}^{T}_{i}\mathbf{G}_{j}\overset{-}{\mathbf{u}^{,}_{j}}
+\end{align*}
+
+\end_inset
+
+And finally the acceleration equation for the screw constraint.
+\begin_inset Formula 
+\[
+\left[\begin{array}{cccc}
+\boldsymbol{\Phi}_{\mathbf{r}_{i}} & \boldsymbol{\Phi}_{\mathbf{p}_{i}} & \boldsymbol{\Phi}_{\mathbf{r}_{j}} & \boldsymbol{\Phi}_{\mathbf{p}_{j}}\end{array}\right]\left[\begin{array}{c}
+\ddot{\mathbf{r}}_{i}\\
+\ddot{\mathbf{p}}_{i}\\
+\ddot{\mathbf{r}}_{j}\\
+\ddot{\mathbf{p}}_{j}
+\end{array}\right]=\boldsymbol{\gamma}+\boldsymbol{\gamma}^{l}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+btprint "btPrintCited"
+bibfiles "Computer_aided_Analysis_of_Mechanical_Sy"
+options "alpha"
+encoding "default"
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
