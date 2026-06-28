@@ -1,0 +1,501 @@
+#LyX 2.5 created this file. For more info see https://www.lyx.org/
+\lyxformat 643
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\maintain_unincluded_children no
+\language canadian
+\language_package default
+\inputencoding utf8
+\fontencoding auto
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_roman_osf false
+\font_sans_osf false
+\font_typewriter_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\float_placement class
+\float_alignment class
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification default
+\crossref_package refstyle
+\use_formatted_ref 0
+\use_minted 0
+\use_lineno 0
+\backgroundcolor none
+\fontcolor none
+\notefontcolor lightgray
+\boxbgcolor red
+\table_border_color default
+\table_odd_row_color default
+\table_even_row_color default
+\table_alt_row_colors_start 1
+\index Index
+\shortcut idx
+\color #008080
+\end_index
+\leftmargin 2cm
+\topmargin 2cm
+\rightmargin 2cm
+\bottommargin 2cm
+\headheight 2cm
+\headsep 1cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tablestyle default
+\tracking_changes false
+\output_changes false
+\change_bars false
+\postpone_fragile_content true
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\docbook_table_output 0
+\docbook_mathml_prefix 1
+\docbook_mathml_version 0
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align}
+\mathbf{\Phi} & =\mathbf{u}^{,T}_{s}\mathbf{u}^{,}_{j}\nonumber \\
+\dot{\mathbf{\Phi}} & =\mathbf{u}^{,T}_{s}\dot{\mathbf{u}}^{,}_{j}+\mathbf{u}^{,T}_{j}\dot{\mathbf{u}}^{,}_{s}\nonumber \\
+\ddot{\mathbf{\Phi}} & =\mathbf{u}^{,T}_{s}\ddot{\mathbf{u}}^{,}_{j}+\mathbf{u}^{,T}_{j}\ddot{\mathbf{u}}^{,}_{s}+2\dot{\mathbf{u}}^{,T}_{s}\dot{\mathbf{u}}^{,}_{j}\label{eq:phi_ddot}
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align}
+\mathbf{u}^{,}_{s} & =\mathbf{A}_{s}\mathbf{u}^{,}_{i}\nonumber \\
+\dot{\mathbf{u}}^{,}_{s} & =\dot{\mathbf{A}}_{s}\mathbf{u}^{,}_{i}\nonumber \\
+\ddot{\mathbf{u}}^{,}_{s} & =\ddot{\mathbf{A}}_{s}\mathbf{u}^{,}_{i}\label{eq:u_s_ddot}
+\end{align}
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{align}
+\mathbf{u}^{,}_{j} & =\mathbf{A}^{T}_{i}\mathbf{A}_{j}\mathbf{u}^{,,}_{j}\nonumber \\
+\dot{\mathbf{u}}^{,}_{j} & =\dot{\mathbf{A}}^{T}_{i}\mathbf{A}_{j}\mathbf{u}^{,,}_{j}+\mathbf{A}^{T}_{i}\dot{\mathbf{A}}_{j}\mathbf{u}^{,,}_{j}\nonumber \\
+\ddot{\mathbf{u}}^{,}_{j} & =\ddot{\mathbf{A}}^{T}_{i}\mathbf{A}_{j}\mathbf{u}^{,,}_{j}+\mathbf{A}^{T}_{i}\ddot{\mathbf{A}}_{j}\mathbf{u}^{,,}_{j}+2\dot{\mathbf{A}}^{T}_{i}\dot{\mathbf{A}}_{j}\mathbf{u}^{,,}_{j}\label{eq:u_j_ddot}
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\mathbf{p}_{s}=\left[\begin{array}{c}
+\cos\left(\frac{\beta}{2}l\right)\\
+\sin\left(\frac{\beta}{2}l\right)\mathbf{a}^{,}_{i}
+\end{array}\right]
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\dot{\mathbf{p}}_{s}=\left[\begin{array}{c}
+-\frac{\beta}{2}\sin\left(\frac{\beta}{2}l\right)\dot{l}\\
+\frac{\beta}{2}\cos\left(\frac{\beta}{2}l\right)\dot{l}\mathbf{a}^{,}_{i}
+\end{array}\right]=\mathbf{k}_{1}\dot{l}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+\ddot{\mathbf{p}}_{s}=\left[\begin{array}{c}
+-\frac{\beta}{2}\sin\left(\frac{\beta}{2}l\right)\ddot{l}-\frac{\beta^{2}}{4}\cos\left(\frac{\beta}{2}l\right)\dot{l}^{2}\\
+\frac{\beta}{2}\cos\left(\frac{\beta}{2}l\right)\ddot{l}\mathbf{a}^{,}_{i}-\frac{\beta^{2}}{4}\sin\left(\frac{\beta}{2}l\right)\dot{l}^{2}\mathbf{a}^{,}_{i}
+\end{array}\right]=\mathbf{k}_{1}\ddot{l}+\mathbf{k}_{2}\dot{l}^{2}\label{eq:p_s_ddot}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align}
+l & =\mathbf{a}^{,T}_{i}\mathbf{d}^{,}\nonumber \\
+\dot{l} & =\mathbf{a}^{,T}_{i}\dot{\mathbf{d}}^{,}\nonumber \\
+\ddot{l} & =\mathbf{a}^{,T}_{i}\ddot{\mathbf{d}}^{,}\label{eq:l_ddot}
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align}
+\mathbf{d}^{,} & =\mathbf{s}^{,}_{j}-\mathbf{s}^{,}_{i}\nonumber \\
+ & =\mathbf{A}^{T}_{i}\left(\mathbf{r}_{j}+\mathbf{A}_{j}\mathbf{s}^{,,}_{j}-\mathbf{r}_{i}\right)-\mathbf{s}^{,}_{i}\nonumber \\
+ & =\mathbf{A}^{T}_{i}\mathbf{r}_{j}+\mathbf{A}^{T}_{i}\mathbf{A}_{j}\mathbf{s}^{,,}_{j}-\mathbf{A}^{T}_{i}\mathbf{r}_{i}-\mathbf{s}^{,}_{i}\nonumber \\
+\dot{\mathbf{d}}^{,} & =\dot{\mathbf{A}}^{T}_{i}\mathbf{r}_{j}+\mathbf{A}^{T}_{i}\dot{\mathbf{r}}_{j}+\dot{\mathbf{A}}^{T}_{i}\mathbf{A}_{j}\mathbf{s}^{,,}_{j}+\mathbf{A}^{T}_{i}\dot{\mathbf{A}}_{j}\mathbf{s}^{,,}_{j}-\dot{\mathbf{A}}^{T}_{i}\mathbf{r}_{i}-\mathbf{A}^{T}_{i}\dot{\mathbf{r}}_{i}\nonumber \\
+\ddot{\mathbf{d}}^{,} & =\ddot{\mathbf{A}}^{T}_{i}\mathbf{r}_{j}+\mathbf{A}^{T}_{i}\ddot{\mathbf{r}}_{j}+2\dot{\mathbf{A}}^{T}_{i}\dot{\mathbf{r}}_{j}+\ddot{\mathbf{A}}^{T}_{i}\mathbf{A}_{j}\mathbf{s}^{,,}_{j}+\mathbf{A}^{T}_{i}\ddot{\mathbf{A}}_{j}\mathbf{s}^{,,}_{j}+2\dot{\mathbf{A}}^{T}_{i}\dot{\mathbf{A}}_{j}\mathbf{s}^{,,}_{j}-\ddot{\mathbf{A}}^{T}_{i}\mathbf{r}_{i}-\mathbf{A}^{T}_{i}\ddot{\mathbf{r}}_{i}-2\dot{\mathbf{A}}^{T}_{i}\dot{\mathbf{r}}_{i}\nonumber \\
+ & =\ddot{\mathbf{A}}^{T}_{i}\left(\mathbf{r}_{j}+\mathbf{s}_{j}-\mathbf{r}_{i}\right)+\mathbf{A}^{T}_{i}\ddot{\mathbf{A}}_{j}\mathbf{s}^{,,}_{j}+\mathbf{A}^{T}_{i}\ddot{\mathbf{r}}_{j}-\mathbf{A}^{T}_{i}\ddot{\mathbf{r}}_{i}+2\dot{\mathbf{A}}^{T}_{i}\dot{\mathbf{A}}_{j}\mathbf{s}^{,,}_{j}+2\dot{\mathbf{A}}^{T}_{i}\dot{\mathbf{r}}_{j}-2\dot{\mathbf{A}}^{T}_{i}\dot{\mathbf{r}}_{i}\nonumber \\
+ & =\ddot{\mathbf{A}}^{T}_{i}\mathbf{\varDelta}+\mathbf{A}^{T}_{i}\ddot{\mathbf{A}}_{j}\mathbf{s}^{,,}_{j}+\mathbf{A}^{T}_{i}\ddot{\mathbf{r}}_{j}-\mathbf{A}^{T}_{i}\ddot{\mathbf{r}}_{i}+2\dot{\mathbf{A}}^{T}_{i}\dot{\mathbf{A}}_{j}\mathbf{s}^{,,}_{j}+2\dot{\mathbf{A}}^{T}_{i}\dot{\mathbf{r}}_{j}-2\dot{\mathbf{A}}^{T}_{i}\dot{\mathbf{r}}_{i}\label{eq:d_p_ddot}
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Expanding equation 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:phi_ddot"
+plural "false"
+caps "false"
+noprefix "false"
+nolink "false"
+tuple "list"
+
+\end_inset
+
+ with equations 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:u_s_ddot,eq:u_j_ddot"
+plural "false"
+caps "false"
+noprefix "false"
+nolink "false"
+tuple "list"
+
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\ddot{\mathbf{\Phi}} & =\mathbf{u}^{,T}_{s}\ddot{\mathbf{A}}^{T}_{i}\mathbf{A}_{j}\mathbf{u}^{,,}_{j}+\mathbf{u}^{,T}_{s}\mathbf{A}^{T}_{i}\ddot{\mathbf{A}}_{j}\mathbf{u}^{,,}_{j}+2\mathbf{u}^{,T}_{s}\dot{\mathbf{A}}^{T}_{i}\dot{\mathbf{A}}_{j}\mathbf{u}^{,,}_{j}+\mathbf{u}^{,T}_{j}\ddot{\mathbf{A}}_{s}\mathbf{u}^{,}_{i}+2\dot{\mathbf{u}}^{,T}_{s}\dot{\mathbf{u}}^{,}_{j}\\
+ & =\mathbf{u}^{,T}_{s}\ddot{\mathbf{A}}^{T}_{i}\mathbf{u}_{j}+\mathbf{u}^{,T}_{s}\mathbf{A}^{T}_{i}\ddot{\mathbf{A}}_{j}\mathbf{u}^{,,}_{j}+\mathbf{u}^{,T}_{j}\ddot{\mathbf{A}}_{s}\mathbf{u}^{,}_{i}+2\dot{\mathbf{u}}^{,T}_{s}\dot{\mathbf{u}}^{,}_{j}+2\mathbf{u}^{,T}_{s}\dot{\mathbf{A}}^{T}_{i}\dot{\mathbf{A}}_{j}\mathbf{u}^{,,}_{j}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Equations from the book to isolate the accelerations and the modified Jacobian:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\ddot{\mathbf{A}}\mathbf{u} & =2\dot{\mathbf{G}}\dot{\mathbf{L}}^{T}\mathbf{u}+2\mathbf{G}\overset{-}{\mathbf{u}}\ddot{\mathbf{p}}\\
+\ddot{\mathbf{A}}^{T}\mathbf{u} & =2\dot{\mathbf{L}}\dot{\mathbf{G}}^{T}\mathbf{u}+2\mathbf{L}\overset{+}{\mathbf{u}}\ddot{\mathbf{p}}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\ddot{\mathbf{\Phi}} & =2\mathbf{u}^{,T}_{s}\dot{\mathbf{L}}_{i}\dot{\mathbf{G}}^{T}_{i}\mathbf{u}_{j}+2\mathbf{u}^{,T}_{s}\mathbf{L}_{i}\overset{+}{\mathbf{u}}_{j}\ddot{\mathbf{p}}_{i}+2\mathbf{u}^{,T}_{s}\mathbf{A}^{T}_{i}\dot{\mathbf{G}}_{j}\dot{\mathbf{L}}^{T}_{j}\mathbf{u}^{,,}_{j}+2\mathbf{u}^{,T}_{s}\mathbf{A}^{T}_{i}\mathbf{G}_{j}\overset{-}{\mathbf{u}}^{,,}_{j}\ddot{\mathbf{p}}_{j}+2\mathbf{u}^{,T}_{j}\dot{\mathbf{G}}_{s}\dot{\mathbf{L}}^{T}_{s}\mathbf{u}^{,}_{i}+2\mathbf{u}^{,T}_{j}\mathbf{G}_{s}\overset{-}{\mathbf{u}_{i}}^{,}\ddot{\mathbf{p}}_{s}\\
+ & +2\dot{\mathbf{u}}^{,T}_{s}\dot{\mathbf{u}}^{,}_{j}+2\mathbf{u}^{,T}_{s}\dot{\mathbf{A}}^{T}_{i}\dot{\mathbf{A}}_{j}\mathbf{u}^{,,}_{j}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Rearranging to isolate the terms dependent on accelerations:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+2\mathbf{u}^{,T}_{s}\mathbf{L}_{i}\overset{+}{\mathbf{u}}_{j}\ddot{\mathbf{p}}_{i}+2\mathbf{u}^{,T}_{s}\mathbf{A}^{T}_{i}\mathbf{G}_{j}\overset{-}{\mathbf{u}}^{,,}_{j}\ddot{\mathbf{p}}_{j}+2\mathbf{u}^{,T}_{j}\mathbf{G}_{s}\overset{-}{\mathbf{u}_{i}}^{,}\ddot{\mathbf{p}}_{s}=\mathbf{\gamma}\label{eq:phi_acceleration}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\mathbf{\gamma=}-2\mathbf{u}^{,T}_{s}\dot{\mathbf{L}}_{i}\dot{\mathbf{G}}^{T}_{i}\mathbf{u}_{j}-2\mathbf{u}^{,T}_{s}\mathbf{A}^{T}_{i}\dot{\mathbf{G}}_{j}\dot{\mathbf{L}}^{T}_{j}\mathbf{u}^{,,}_{j}-2\mathbf{u}^{,T}_{j}\dot{\mathbf{G}}_{s}\dot{\mathbf{L}}^{T}_{s}\mathbf{u}^{,}_{i}-2\dot{\mathbf{u}}^{,T}_{s}\dot{\mathbf{u}}^{,}_{j}-2\mathbf{u}^{,T}_{s}\dot{\mathbf{A}}^{T}_{i}\dot{\mathbf{A}}_{j}\mathbf{u}^{,,}_{j}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Two modified Jacobians can be found from equation 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:phi_acceleration"
+plural "false"
+caps "false"
+noprefix "false"
+nolink "false"
+tuple "list"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\mathbf{\Phi}^{,}_{\mathbf{r_{i}}} & =\mathbf{0}^{T}\\
+\mathbf{\Phi}^{,}_{\mathbf{p}_{i}} & =2\mathbf{u}^{,T}_{s}\mathbf{L}_{i}\overset{+}{\mathbf{u}}_{j}\\
+\mathbf{\Phi}^{,}_{\mathbf{r}_{j}} & =\mathbf{0}^{T}\\
+\Phi^{,}_{\mathbf{p}_{j}} & =2\mathbf{u}^{,T}_{s}\mathbf{A}^{T}_{i}\mathbf{G}_{j}\overset{-}{\mathbf{u}}^{,,}_{j}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The term dependent on 
+\begin_inset Formula $\ddot{\mathbf{p}}_{s}$
+\end_inset
+
+ is expanded with the help of equation 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:p_s_ddot"
+plural "false"
+caps "false"
+noprefix "false"
+nolink "false"
+tuple "list"
+
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+2\mathbf{u}^{,T}_{j}\mathbf{G}_{s}\overset{-}{\mathbf{u}_{i}}^{,}\ddot{\mathbf{p}}_{s}=\mathbf{M}\left(\mathbf{k}_{1}\ddot{l}+\mathbf{k}_{2}\dot{l}^{2}\right)=m_{1}\ddot{l}+m_{2}\dot{l}^{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $m_{1}\ddot{l}$
+\end_inset
+
+ is expanded with the help of equations 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:l_ddot,eq:d_p_ddot"
+plural "false"
+caps "false"
+noprefix "false"
+nolink "false"
+tuple "list"
+
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+m_{1}\ddot{l}=m_{1}\mathbf{a}^{,T}_{i}\ddot{\mathbf{A}}^{T}_{i}\mathbf{\varDelta}+m_{1}\mathbf{a}^{,T}_{i}\mathbf{A}^{T}_{i}\ddot{\mathbf{A}}_{j}\mathbf{s}^{,,}_{j}+m_{1}\mathbf{a}^{,T}_{i}\mathbf{A}^{T}_{i}\ddot{\mathbf{r}}_{j}-m_{1}\mathbf{a}^{,T}_{i}\mathbf{A}^{T}_{i}\ddot{\mathbf{r}}_{i}+2m_{1}\mathbf{a}^{,T}_{i}\dot{\mathbf{A}}^{T}_{i}\dot{\mathbf{A}}_{j}\mathbf{s}^{,,}_{j}+2m_{1}\mathbf{a}^{,T}_{i}\dot{\mathbf{A}}^{T}_{i}\dot{\mathbf{r}}_{j}-2m_{1}\mathbf{a}^{,T}_{i}\dot{\mathbf{A}}^{T}_{i}\dot{\mathbf{r}}_{i}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Equations from the book are used once again to find the dependence on the Euler parameter accelerations.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+m_{1}\ddot{l} & =2m_{1}\mathbf{a}^{,T}_{i}\dot{\mathbf{L}}_{i}\dot{\mathbf{G}}^{T}_{i}\varDelta+2m_{1}\mathbf{a}^{,T}_{i}\mathbf{L}_{i}\overset{+}{\mathbf{\varDelta}}\ddot{\mathbf{p}}_{i}+2m_{1}\mathbf{a}^{,T}_{i}\mathbf{A}^{T}_{i}\dot{\mathbf{G}}_{j}\dot{\mathbf{L}}^{T}_{j}\mathbf{s}^{,,}_{j}+2m_{1}\mathbf{a}^{,T}_{i}\mathbf{A}^{T}_{i}\mathbf{G}_{j}\overset{-}{\mathbf{s}_{j}}^{,,}\ddot{\mathbf{p}}_{j}\\
+ & +m_{1}\mathbf{a}^{,T}_{i}\mathbf{A}^{T}_{i}\ddot{\mathbf{r}}_{j}-m_{1}\mathbf{a}^{,T}_{i}\mathbf{A}^{T}_{i}\ddot{\mathbf{r}}_{i}+2m_{1}\mathbf{a}^{,T}_{i}\dot{\mathbf{A}}^{T}_{i}\dot{\mathbf{A}}_{j}\mathbf{s}^{,,}_{j}+2m_{1}\mathbf{a}^{,T}_{i}\dot{\mathbf{A}}^{T}_{i}\dot{\mathbf{r}}_{j}-2m_{1}\mathbf{a}^{,T}_{i}\dot{\mathbf{A}}^{T}_{i}\dot{\mathbf{r}}_{i}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Rearranging to put all the terms dependent on accelerations on the left hand side and the constant terms on the right hand side.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+2m_{1}\mathbf{a}^{,T}_{i}\mathbf{L}_{i}\overset{+}{\mathbf{\varDelta}}\ddot{\mathbf{p}}_{i}+2m_{1}\mathbf{a}^{,T}_{i}\mathbf{A}^{T}_{i}\mathbf{G}_{j}\overset{-}{\mathbf{s}_{j}}^{,,}\ddot{\mathbf{p}}_{j}+m_{1}\mathbf{a}^{,T}_{i}\mathbf{A}^{T}_{i}\ddot{\mathbf{r}}_{j}-m_{1}\mathbf{a}^{,T}_{i}\mathbf{A}^{T}_{i}\ddot{\mathbf{r}}_{i}=\mathbf{\gamma}\label{eq:m1_l_ddot_acceleration}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\mathbf{\gamma}^{l}=-2m_{1}\mathbf{a}^{,T}_{i}\dot{\mathbf{L}}_{i}\dot{\mathbf{G}}^{T}_{i}\varDelta-2m_{1}\mathbf{a}^{,T}_{i}\mathbf{A}^{T}_{i}\dot{\mathbf{G}}_{j}\dot{\mathbf{L}}^{T}_{j}\mathbf{s}^{,,}_{j}-2m_{1}\mathbf{a}^{,T}_{i}\dot{\mathbf{A}}^{T}_{i}\dot{\mathbf{A}}_{j}\mathbf{s}^{,,}_{j}-2m_{1}\mathbf{a}^{,T}_{i}\dot{\mathbf{A}}^{T}_{i}\dot{\mathbf{r}}_{j}+2m_{1}\mathbf{a}^{,T}_{i}\dot{\mathbf{A}}^{T}_{i}\dot{\mathbf{r}}_{i}-m_{2}\dot{l}^{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Equation 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:m1_l_ddot_acceleration"
+plural "false"
+caps "false"
+noprefix "false"
+nolink "false"
+tuple "list"
+
+\end_inset
+
+ reveals the modified Jacobians:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\left(m_{1}\ddot{l}\right)_{\mathbf{r}_{i}} & =-m_{1}\mathbf{a}^{,T}_{i}\mathbf{A}^{T}_{i}\\
+\left(m_{1}\ddot{l}\right)_{\mathbf{p}_{i}} & =2m_{1}\mathbf{a}^{,T}_{i}\mathbf{L}_{i}\overset{+}{\mathbf{\varDelta}}\\
+\left(m_{1}\ddot{l}\right)_{\mathbf{r}_{j}} & =m_{1}\mathbf{a}^{,T}_{i}\mathbf{A}^{T}_{i}\\
+\left(m_{1}\ddot{l}\right)_{\mathbf{p}_{j}} & =2m_{1}\mathbf{a}^{,T}_{i}\mathbf{A}^{T}_{i}\mathbf{G}_{j}\overset{-}{\mathbf{s}_{j}}^{,,}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+These Jacobians are combined with the Jacobians obtained from the main constraint equation to yield the modified Jacobians for the constraint.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\mathbf{\Phi}_{\mathbf{r_{i}}} & =-m_{1}\mathbf{a}^{,T}_{i}\mathbf{A}^{T}_{i}\\
+\mathbf{\Phi}_{\mathbf{p}_{i}} & =2\mathbf{u}^{,T}_{s}\mathbf{L}_{i}\overset{+}{\mathbf{u}}_{j}+2m_{1}\mathbf{a}^{,T}_{i}\mathbf{L}_{i}\overset{+}{\mathbf{\varDelta}}\\
+\mathbf{\Phi}_{\mathbf{r}_{j}} & =m_{1}\mathbf{a}^{,T}_{i}\mathbf{A}^{T}_{i}\\
+\Phi_{\mathbf{p}_{j}} & =2\mathbf{u}^{,T}_{s}\mathbf{A}^{T}_{i}\mathbf{G}_{j}\overset{-}{\mathbf{u}}^{,,}_{j}+2m_{1}\mathbf{a}^{,T}_{i}\mathbf{A}^{T}_{i}\mathbf{G}_{j}\overset{-}{\mathbf{s}_{j}}^{,,}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\left[\begin{array}{cccc}
+\mathbf{\Phi}_{\mathbf{r_{i}}} & \mathbf{\Phi}_{\mathbf{p}_{i}} & \mathbf{\Phi}_{\mathbf{r}_{j}} & \Phi_{\mathbf{p}_{j}}\end{array}\right]\left[\begin{array}{c}
+\ddot{\mathbf{r}}_{i}\\
+\ddot{\mathbf{p}}_{i}\\
+\ddot{\mathbf{r}}_{j}\\
+\ddot{\mathbf{p}}_{j}
+\end{array}\right]=\mathbf{\gamma}+\mathbf{\gamma}^{l}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

@@ -12,23 +12,29 @@
 #include <glm/gtx/transform.hpp>
 
 #define G_GRAVITY 9.81
-#define MASS 1.0
-#define INITIAL_DROP 0.5
-#define RADIUS 0.5
-#define LENGTH 0.2
+#define AXIS_MASS 1.0
+#define AXIS_RADIUS 0.2
+#define AXIS_LENGTH 5.0
+#define SLIDER_MASS 0.1
+#define SLIDER_RADIUS 0.5
+#define SLIDER_LENGTH 0.2
+#define INITIAL_OFFSET 0.75
 #define REST_DROP 1.0
-#define K_SPRING (MASS*G_GRAVITY/REST_DROP)
-#define OMEGA_SPRING sqrt(K_SPRING/MASS)
-#define D_SPRING INITIAL_DROP
+#define K_SPRING (SLIDER_MASS*G_GRAVITY/REST_DROP)
+#define OMEGA_SPRING sqrt(K_SPRING/SLIDER_MASS)
+#define D_SPRING INITIAL_OFFSET
 #define K_CRITICAL (2*sqrt(MASS*K_SPRING))
-#define ZETA_DAMP 0.1
+#define ZETA_DAMP 0.01
 #define K_DAMP (2*ZETA_DAMP*OMEGA_SPRING)
-#define N_ROTATION 10.0
+#define N_ROTATION 0.1
 #define BETA_SCREW ((N_ROTATION*2*M_PI)/REST_DROP)
+//#define BETA_SCREW 0.0
 
 
 Body *datumBody = new DatumBody;
-Body *massBody;
+Body *axis;
+Body *slider;
+Constraint *revoluteJoint;
 Constraint *cylindricalJoint;
 Constraint *screwJoint;
 ForceElement *gravity;
@@ -38,33 +44,73 @@ System mbsystem;
 
 void init_system(void)
 {
-    Eigen::Vector3d a1_p(0.0, 1.0, 0.0); // datum space
-    Eigen::Vector3d a2_p(0.0, 1.0, 0.0);
-    Eigen::Vector3d s1B_p(0.0, INITIAL_DROP, 0.0);
-    Eigen::Vector3d s2B_p(-0.2, 0.0, 0.0);
-    Eigen::Vector3d r_mass = s1B_p - Eigen::Vector3d(0.0, INITIAL_DROP, 0.0) - s2B_p;
-    Eigen::Vector4d p_mass(1.0, 0.0, 0.0, 0.0);
-    Eigen::Vector3d r_dot_mass(0.0, 0.0, 0.0);
-    Eigen::Vector4d p_dot_mass(0.0, 0.0, 0.0, 0.0);
+    // Revolute joint body1:datum body2:axis
+    Eigen::Vector3d s1_p_rev(0.0, 0.0, 0.0);
+    Eigen::Vector3d s2_p_rev(0.0, 0.0, 0.0);
+    Eigen::Vector3d h1_p_rev(0.0, 0.0, 1.0);
+    Eigen::Vector3d h2_p_rev(0.0, 0.0, 1.0);
 
-    massBody = new CylinderYaxis(
-                r_mass,
-                p_mass,
-                r_dot_mass,
-                p_dot_mass,
-                MASS,
-                RADIUS,
-                LENGTH);
+    // Cylindrical joint body1:axis body2:slider
+    Eigen::Vector3d a1_p_cyl(-1.0, 0.0, 0.0);
+    Eigen::Vector3d a2_p_cyl(-1.0, 0.0, 0.0);
+    Eigen::Vector3d s1B_p_cyl(-AXIS_LENGTH/2, 0.25, 0.0);
+    Eigen::Vector3d s2B_p_cyl(0.0,-0.2, 0.0);
+
+    // Screw joint body1:axis body2:slider
+    Eigen::Vector3d s1_p_screw = s1B_p_cyl;
+    Eigen::Vector3d s2_p_screw = s2B_p_cyl;
+    Eigen::Vector3d u1_p_screw(0.0, 1.0, 0.0);
+    Eigen::Vector3d u2_p_screw(0.0, 0.0, 1.0);
+    Eigen::Vector3d a1_p_screw = a1_p_cyl;
+
+    // Inititialize the postions of the bodies
+    Eigen::Vector4d p_axis(1.0, 0.0, 0.0, 0.0);
+    Eigen::Vector4d p_dot_axis = Eigen::Vector4d::Zero();
+    Eigen::Vector4d p_slider = p_axis;
+    Eigen::Vector4d p_dot_slider = Eigen::Vector4d::Zero();
+    Eigen::Matrix3d A = caams::Ap(p_axis);
+    Eigen::Vector3d r_axis(0.0, 0.0, 0.0);
+    Eigen::Vector3d r_dot_axis = Eigen::Vector3d::Zero();
+    Eigen::Vector3d r_slider =
+            r_axis
+            + A*s1B_p_cyl
+            + A*Eigen::Vector3d(INITIAL_OFFSET+AXIS_LENGTH/2, 0.0, 0.0)
+            - A*s2B_p_cyl;
+    Eigen::Vector3d r_dot_slider = Eigen::Vector3d::Zero();
+
+    axis = new CylinderXaxis(
+                r_axis,
+                p_axis,
+                r_dot_axis,
+                p_dot_axis,
+                AXIS_MASS,
+                AXIS_RADIUS,
+                AXIS_LENGTH);
+
+    slider = new CylinderXaxis(
+                r_slider,
+                p_slider,
+                r_dot_slider,
+                p_dot_slider,
+                SLIDER_MASS,
+                SLIDER_RADIUS,
+                SLIDER_LENGTH);
+
+    revoluteJoint = new RevoluteJoint(
+                datumBody, axis,
+                s1_p_rev, s2_p_rev,
+                h1_p_rev, h2_p_rev);
 
     cylindricalJoint = new CylindricalJoint(
-                datumBody, massBody, a1_p, a2_p, s1B_p, s2B_p);
-
-    Eigen::Vector3d u1_p(1.0, 0.0, 0.0);
-    Eigen::Vector3d u2_p(0.0, 0.0,-1.0);
+                axis, slider,
+                a1_p_cyl, a2_p_cyl,
+                s1B_p_cyl, s2B_p_cyl);
 
     screwJoint = new ScrewJointLocal(
-                datumBody, massBody,
-                s1B_p, s2B_p, u1_p, u2_p, a1_p,
+                axis, slider,
+                s1_p_screw, s2_p_screw,
+                u1_p_screw, u2_p_screw,
+                a1_p_screw,
                 BETA_SCREW);
 
 	gravity = new SystemGravityForce(
@@ -72,10 +118,12 @@ void init_system(void)
 				mbsystem);
 
     spring = new LinearSpringDamperForce(
-                datumBody, massBody, s1B_p, s2B_p,
-                D_SPRING, K_SPRING, K_DAMP);
+                axis, slider, s1B_p_cyl, s2B_p_cyl,
+                D_SPRING+AXIS_LENGTH/2, K_SPRING, K_DAMP);
 
-    mbsystem.AddBody(massBody);
+    mbsystem.AddBody(axis);
+    mbsystem.AddBody(slider);
+    mbsystem.AddConstraint(revoluteJoint);
     mbsystem.AddConstraint(cylindricalJoint);
     mbsystem.AddConstraint(screwJoint);
 	mbsystem.AddForce(gravity);
@@ -111,13 +159,12 @@ void display(void){
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
     glColor3f(1.0f,1.0f,1.0f);
-    mbsystem.Integrate(1/60.0);
 
     mbsystem.Draw();
 
     datumBody->Draw();
 
-    screwJoint->DrawReaction();
+    mbsystem.Integrate(1/60.0);
 
     glutSwapBuffers();
 

@@ -1240,7 +1240,7 @@ ScrewJoint_1::ScrewJoint_1(
     Eigen::Vector3d d_vec = body2->rk_r + A1*s1_p - body1->rk_r - A2*s2_p;
     Eigen::Vector3d a1 = A1*a1_p;
     double d = a1.dot(d_vec);
-    theta0 = beta*d;
+    theta0 = beta/2*d;
 }
 
 Eigen::MatrixXd ScrewJoint_1::Body1Jacobian(void)
@@ -1267,9 +1267,9 @@ Eigen::MatrixXd ScrewJoint_1::Body1ModifiedJacobian(void)
     double d = a1.dot(d_vec);
     double d_dot = a1.dot(d_vec_dot) + d_vec.dot(a1_dot);
     Eigen::Vector4d ps;
-    ps << cos(beta/2.0*d), a1_p*sin(beta/2.0*d);
+    ps << cos(beta/2.0*d-theta0), a1_p*sin(beta/2.0*d-theta0);
     Eigen::Vector4d k1;
-    k1 << -beta/2.0*sin(beta/2*d), a1_p*beta/2*cos(beta/2*d);
+    k1 << -beta/2.0*sin(beta/2*d-theta0), a1_p*beta/2*cos(beta/2*d-theta0);
     Eigen::Vector4d ps_dot = k1*d_dot;
     Eigen::Matrix3d As = caams::Ap(ps);
     Eigen::Matrix3d As_dot = caams::A_dot(ps, ps_dot);
@@ -1305,9 +1305,9 @@ Eigen::MatrixXd ScrewJoint_1::Body2ModifiedJacobian(void)
     double d = a1.dot(d_vec);
     double d_dot = a1.dot(d_vec_dot) + d_vec.dot(a1_dot);
     Eigen::Vector4d ps;
-    ps << cos(beta/2.0*d), a1_p*sin(beta/2.0*d);
+    ps << cos(beta/2.0*d-theta0), a1_p*sin(beta/2.0*d-theta0);
     Eigen::Vector4d k1;
-    k1 << -beta/2.0*sin(beta/2*d), a1_p*beta/2*cos(beta/2*d);
+    k1 << -beta/2.0*sin(beta/2*d-theta0), a1_p*beta/2*cos(beta/2*d-theta0);
     Eigen::Vector4d ps_dot = k1*d_dot;
     Eigen::Matrix3d As = caams::Ap(ps);
     Eigen::Matrix3d As_dot = caams::A_dot(ps, ps_dot);
@@ -1344,9 +1344,9 @@ Eigen::VectorXd ScrewJoint_1::PHI(void)
     double d = a1.dot(d_vec);
     double d_dot = a1.dot(d_vec_dot) + d_vec.dot(a1_dot);
     Eigen::Vector4d ps;
-    ps << cos(beta/2.0*d), a1_p*sin(beta/2.0*d);
+    ps << cos(beta/2.0*d-theta0), a1_p*sin(beta/2.0*d-theta0);
     Eigen::Vector4d k1;
-    k1 << -beta/2.0*sin(beta/2*d), a1_p*beta/2*cos(beta/2*d);
+    k1 << -beta/2.0*sin(beta/2*d-theta0), a1_p*beta/2*cos(beta/2*d-theta0);
     Eigen::Vector4d ps_dot = k1*d_dot;
     Eigen::Matrix3d As = caams::Ap(ps);
     Eigen::Matrix3d As_dot = caams::A_dot(ps, ps_dot);
@@ -1358,8 +1358,8 @@ Eigen::VectorXd ScrewJoint_1::PHI(void)
 
     result = u1.transpose()*u2;
 
-    // std::cout << "ScrewJoint_1::PHI result:\n"
-    //           << result << std::endl;
+    std::cout << "ScrewJoint_1::PHI result:\n"
+              << result << std::endl;
     return result;
 }
 
@@ -1422,6 +1422,182 @@ void ScrewJoint_1::Draw(void)
 void ScrewJoint_1::DrawReaction(void)
 {
 }
+
+
+
+
+
+ScrewJointLocal::ScrewJointLocal(
+        Body *body1,
+        Body *body2,
+        Eigen::Vector3d s1_p,
+        Eigen::Vector3d s2_pp,
+        Eigen::Vector3d u1_p,
+        Eigen::Vector3d u2_pp,
+        Eigen::Vector3d a1_p,
+        double beta):
+    Constraint(body1, body2, 1),
+    s1_p(s1_p),
+    s2_pp(s2_pp),
+    u1_p(u1_p),
+    u2_pp(u2_pp),
+    a1_p(a1_p),
+    beta(beta)
+{
+    // Initialize theta0
+    Eigen::Matrix3d A1 = caams::Ap(body1->rk_p);
+    Eigen::Matrix3d A2 = caams::Ap(body2->rk_p);
+    Eigen::Vector3d d_p = A1.transpose()*(body2->rk_r + A2*s2_pp - body1->rk_r) - s1_p;
+    double l = a1_p.dot(d_p);
+    theta0 = l*beta/2.0;
+}
+
+Eigen::MatrixXd ScrewJointLocal::Body1Jacobian(void)
+{
+    return Body1ModifiedJacobian();
+}
+
+Eigen::MatrixXd ScrewJointLocal::Body2Jacobian(void)
+{
+    return Body2ModifiedJacobian();
+}
+
+Eigen::MatrixXd ScrewJointLocal::Body1ModifiedJacobian(void)
+{
+    Eigen::Matrix<double,1,7> result;
+    Eigen::Matrix3d A1 = caams::Ap(body1->rk_p);
+    Eigen::Matrix3d A2 = caams::Ap(body2->rk_p);
+    Eigen::Vector3d d_p = A1.transpose()*(body2->rk_r + A2*s2_pp - body1->rk_r) - s1_p;
+    double l = a1_p.dot(d_p);
+    Eigen::Vector4d ps;
+    ps << cos(beta/2.0*l-theta0), a1_p*sin(beta/2.0*l-theta0);
+    Eigen::Vector4d k1;
+    k1 << -beta/2.0*sin(beta/2*l-theta0), a1_p*beta/2*cos(beta/2*l-theta0);
+    Eigen::Matrix3d As = caams::Ap(ps);
+    Eigen::Vector3d us_p = As*u1_p;
+    Eigen::Vector3d u2 = A2*u2_pp;
+    Eigen::Vector3d u2_p = A1.transpose()*u2;
+    Eigen::RowVector4d M = 2*u2_p.transpose()*caams::G(ps)*caams::a_minus(u1_p);
+    double m1 = M*k1;
+    Eigen::Vector3d s2 = A2*s2_pp;
+    Eigen::Vector3d delta = body2->rk_r + s2 - body1->rk_r;
+    result.head<3>() = -m1*a1_p.transpose()*A1.transpose();
+    result.tail<4>() =
+            2*us_p.transpose()*caams::L(body1->rk_p)*caams::a_plus(u2)
+            +2*m1*a1_p.transpose()*caams::L(body1->rk_p)*caams::a_plus(delta);
+
+    return result;
+}
+
+Eigen::MatrixXd ScrewJointLocal::Body2ModifiedJacobian(void)
+{
+    Eigen::Matrix<double,1,7> result;
+    Eigen::Matrix3d A1 = caams::Ap(body1->rk_p);
+    Eigen::Matrix3d A2 = caams::Ap(body2->rk_p);
+    Eigen::Vector3d d_p = A1.transpose()*(body2->rk_r + A2*s2_pp - body1->rk_r) - s1_p;
+    double l = a1_p.dot(d_p);
+    Eigen::Vector4d ps;
+    ps << cos(beta/2.0*l-theta0), a1_p*sin(beta/2.0*l-theta0);
+    Eigen::Vector4d k1;
+    k1 << -beta/2.0*sin(beta/2*l-theta0), a1_p*beta/2*cos(beta/2*l-theta0);
+    Eigen::Matrix3d As = caams::Ap(ps);
+    Eigen::Vector3d us_p = As*u1_p;
+    Eigen::Vector3d u2 = A2*u2_pp;
+    Eigen::Vector3d u2_p = A1.transpose()*u2;
+    Eigen::RowVector4d M = 2*u2_p.transpose()*caams::G(ps)*caams::a_minus(u1_p);
+    double m1 = M*k1;
+    Eigen::Vector3d s2 = A2*s2_pp;
+    Eigen::Vector3d delta = body2->rk_r + s2 - body1->rk_r;
+    result.head<3>() = m1*a1_p.transpose()*A1.transpose();
+    result.tail<4>() =
+            2*us_p.transpose()*A1.transpose()*caams::G(body2->rk_p)*caams::a_minus(u2_pp)
+            +2*m1*a1_p.transpose()*A1.transpose()*caams::G(body2->rk_p)*caams::a_minus(s2_pp);
+
+    return result;
+}
+
+Eigen::VectorXd ScrewJointLocal::PHI(void)
+{
+    Eigen::Matrix<double,1,1> result;
+    Eigen::Matrix3d A1 = caams::Ap(body1->rk_p);
+    Eigen::Matrix3d A2 = caams::Ap(body2->rk_p);
+    Eigen::Vector3d d_p = A1.transpose()*(body2->rk_r + A2*s2_pp - body1->rk_r) - s1_p;
+    double l = a1_p.dot(d_p);
+    Eigen::Vector4d ps;
+    ps << cos(beta/2.0*l-theta0), a1_p*sin(beta/2.0*l-theta0);
+    Eigen::Vector4d k1;
+    k1 << -beta/2.0*sin(beta/2*l-theta0), a1_p*beta/2*cos(beta/2*l-theta0);
+    Eigen::Matrix3d As = caams::Ap(ps);
+    Eigen::Vector3d us_p = As*u1_p;
+    Eigen::Vector3d u2 = A2*u2_pp;
+    Eigen::Vector3d u2_p = A1.transpose()*u2;
+    result = us_p.transpose()*u2_p;
+    std::cout << "ScrewJointLocal::PHI  l:\n"
+              << l << "\n d_p:\n"
+              << d_p
+              <<  "\nresult:\n"
+              << result << std::endl;
+    return result;
+}
+
+Eigen::VectorXd ScrewJointLocal::ModifiedGamma(void)
+{
+    Eigen::Matrix<double,1,1> result;
+    Eigen::Matrix3d A1 = caams::Ap(body1->rk_p);
+    Eigen::Matrix3d A1_dot = caams::A_dot(body1->rk_p, body1->rk_p_dot);
+    Eigen::Matrix3d A2 = caams::Ap(body2->rk_p);
+    Eigen::Matrix3d A2_dot = caams::A_dot(body2->rk_p, body2->rk_p_dot);
+    Eigen::Vector3d d_p = A1.transpose()*(body2->rk_r + A2*s2_pp - body1->rk_r) - s1_p;
+    double l = a1_p.dot(d_p);
+    Eigen::Vector3d s2 = A2*s2_pp;
+    Eigen::Vector3d delta = body2->rk_r + s2 - body1->rk_r;
+    Eigen::Vector3d d_p_dot = A1_dot.transpose()*delta
+            + A1.transpose()*(body2->rk_r_dot + A2_dot*s2_pp - body1->rk_r_dot);
+    double l_dot = a1_p.transpose()*d_p_dot;
+    Eigen::Vector4d ps;
+    ps << cos(beta/2.0*l-theta0), a1_p*sin(beta/2.0*l-theta0);
+    Eigen::Vector4d k1;
+    k1 << -beta/2.0*sin(beta/2*l-theta0), a1_p*beta/2*cos(beta/2*l-theta0);
+    Eigen::Vector4d k2;
+    k2 << -beta*beta/4*cos(beta/2*l-theta0), -a1_p*beta*beta/4*sin(beta/2*l-theta0);
+    Eigen::Vector4d ps_dot = k1*l_dot;
+    Eigen::Matrix3d As = caams::Ap(ps);
+    Eigen::Matrix3d As_dot = caams::A_dot(ps, ps_dot);
+    Eigen::Vector3d us_p = As*u1_p;
+    Eigen::Vector3d us_p_dot = As_dot*u1_p;
+    Eigen::Vector3d u2 = A2*u2_pp;
+    Eigen::Vector3d u2_p = A1.transpose()*u2;
+    Eigen::Vector3d u2_p_dot = (A1_dot.transpose()*A2 + A1.transpose()*A2_dot)*u2_pp;
+    Eigen::RowVector4d M = 2*u2_p.transpose()*caams::G(ps)*caams::a_minus(u1_p);
+    double m1 = M*k1;
+    double m2 = M*k2;
+    Eigen::Matrix<double,1,1> gamma =
+            -2*us_p.transpose()*caams::L(body1->rk_p_dot)*caams::G(body1->rk_p_dot).transpose()*u2
+            -2*us_p.transpose()*A1.transpose()*caams::G(body2->rk_p_dot)*caams::L(body2->rk_p_dot).transpose()*u2_pp
+            -2*u2_p.transpose()*caams::G(ps_dot)*caams::L(ps_dot).transpose()*u1_p
+            -2*us_p_dot.transpose()*u2_p_dot
+            -2*us_p.transpose()*A1_dot.transpose()*A2_dot*u2_pp;
+    Eigen::Matrix<double,1,1> gamma_l =
+            -2*m1*a1_p.transpose()*
+            (caams::L(body1->rk_p_dot)*caams::G(body1->rk_p_dot).transpose()*delta
+             +A1.transpose()*caams::G(body2->rk_p_dot)*caams::L(body2->rk_p_dot).transpose()*s2_pp
+             +A1_dot.transpose()*(A2_dot*s2_pp + body2->rk_r_dot - body1->rk_r_dot))
+            -Eigen::Matrix<double,1,1>(m2*l_dot*l_dot);
+
+    result = gamma + gamma_l;
+    std::cout << "ScrewJointLocal::ModifiedGamma result:\n"
+              << result << std::endl;
+    return result;
+}
+
+void ScrewJointLocal::Draw(void)
+{
+}
+
+void ScrewJointLocal::DrawReaction(void)
+{
+}
+
 
 //
 // Composite constraints
