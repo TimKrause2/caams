@@ -29,5 +29,9 @@ that was developed by me.
   5. `cmake ..`
   6. `make`
 
-
+## Running the example programs
+Once the project is built using the steps described above the apps will be
+available at `caams/build/apps`. There not meant to be installed. Each program
+is in its own subdirectory with the same name. The graphics are simple
+shapes rendered with wireframes.
 
