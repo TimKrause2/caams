@@ -1532,10 +1532,7 @@ Eigen::VectorXd ScrewJointLocal::PHI(void)
     Eigen::Vector3d u2 = A2*u2_pp;
     Eigen::Vector3d u2_p = A1.transpose()*u2;
     result = us_p.transpose()*u2_p;
-    std::cout << "ScrewJointLocal::PHI  l:\n"
-              << l << "\n d_p:\n"
-              << d_p
-              <<  "\nresult:\n"
+    std::cout << "ScrewJointLocal::PHI result:\n"
               << result << std::endl;
     return result;
 }
@@ -1585,8 +1582,8 @@ Eigen::VectorXd ScrewJointLocal::ModifiedGamma(void)
             -Eigen::Matrix<double,1,1>(m2*l_dot*l_dot);
 
     result = gamma + gamma_l;
-    std::cout << "ScrewJointLocal::ModifiedGamma result:\n"
-              << result << std::endl;
+    // std::cout << "ScrewJointLocal::ModifiedGamma result:\n"
+    //           << result << std::endl;
     return result;
 }
 

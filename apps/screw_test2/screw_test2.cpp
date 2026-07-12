@@ -15,7 +15,7 @@
 #define AXIS_MASS 1.0
 #define AXIS_RADIUS 0.2
 #define AXIS_LENGTH 5.0
-#define SLIDER_MASS 0.1
+#define SLIDER_MASS 0.5
 #define SLIDER_RADIUS 0.5
 #define SLIDER_LENGTH 0.2
 #define INITIAL_OFFSET 0.75
@@ -23,13 +23,10 @@
 #define K_SPRING (SLIDER_MASS*G_GRAVITY/REST_DROP)
 #define OMEGA_SPRING sqrt(K_SPRING/SLIDER_MASS)
 #define D_SPRING INITIAL_OFFSET
-#define K_CRITICAL (2*sqrt(MASS*K_SPRING))
 #define ZETA_DAMP 0.01
 #define K_DAMP (2*ZETA_DAMP*OMEGA_SPRING)
-#define N_ROTATION 0.1
+#define N_ROTATION 2.0
 #define BETA_SCREW ((N_ROTATION*2*M_PI)/REST_DROP)
-//#define BETA_SCREW 0.0
-
 
 Body *datumBody = new DatumBody;
 Body *axis;
