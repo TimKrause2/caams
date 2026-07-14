@@ -103,10 +103,74 @@
 
 \begin_body
 
+\begin_layout Title
+Screw Constraint
+\end_layout
+
+\begin_layout Author
+Timothy Krause
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset href
+LatexCommand href
+name "mailto:tmkrs4482@gmail.com"
+target "tmkrs4482@gmail.com"
+type "mailto:"
+literal "false"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Date
+July 13,
+ 2026
+\end_layout
+
+\begin_layout Paragraph*
+Introduction:
+\end_layout
+
 \begin_layout Standard
 This constraint is fundamentally a normal constraint between two vectors resolved in body i space.
- One vector rotates by an angle dependent on the distance along the axis of rotation and the other vector is embedded in the other body.
+ One vector rotates by an angle dependent on the distance between two points on the axis of rotation and the other vector is embedded in the other body.
  This constraint is meant to be used with a cylindrical joint to maintain parallel axes and provide translation for a final single degree of freedom.
+\end_layout
+
+\begin_layout Standard
+The method used and the notation is from 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "nikravesh1988computer"
+literal "false"
+
+\end_inset
+
+.
+ The screw constraint mentioned in the book was informative but proved to be inadequate as a constraint as it completely constrained the system with no degrees of freedom.
+\end_layout
+
+\begin_layout Standard
+To see a rudimentary implementation of the screw constraint described here there is a github repository with example programs:
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset href
+LatexCommand href
+name "https://github.com/TimKrause2/caams"
+target "https://github.com/TimKrause2/caams"
+literal "false"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph*
+Derivation:
 \end_layout
 
 \begin_layout Standard
@@ -188,10 +252,15 @@ The main constraint equation and its derivatives
 \end_inset
 
 
+\begin_inset Formula $\beta$
+\end_inset
+
+ is the inverse of the pitch rate with units of radians per unit length.
+ 
 \begin_inset Formula $\mathbf{a}^{,}_{i}$
 \end_inset
 
- is a unit vector pointing the direction of the axis and resolved in body i space.
+ is a unit vector pointing in the direction of the axis and resolved in body i space.
 \begin_inset Formula 
 \begin{align}
 l & =\mathbf{a}^{,T}_{i}\mathbf{d}^{,}\nonumber \\
@@ -206,6 +275,7 @@ l & =\mathbf{a}^{,T}_{i}\mathbf{d}^{,}\nonumber \\
 \end_inset
 
 is the displacement between points embedded in each object resolved in body i space.
+ These two points are assumed to be on the axis of rotation which is maintained by the cylindrical constraint.
  
 \begin_inset Formula 
 \begin{align}
@@ -269,7 +339,7 @@ literal "false"
 
 \end_inset
 
- are used to isolate the accelerations and the modified Jacobian:
+ are used to isolate the the terms dependent on the accelerations and hence the modified Jacobians:
 \begin_inset Formula 
 \begin{align*}
 \ddot{\mathbf{A}}\mathbf{u} & =2\dot{\mathbf{G}}\dot{\mathbf{L}}^{T}\mathbf{u}+2\mathbf{G}\overset{-}{\mathbf{u}}\ddot{\mathbf{p}}\\
@@ -343,6 +413,18 @@ tuple "list"
 \begin_layout Standard
 The term dependent on 
 \begin_inset Formula $\ddot{\mathbf{p}}_{s}$
+\end_inset
+
+ in equation 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:phi_acceleration"
+plural "false"
+caps "false"
+noprefix "false"
+nolink "false"
+tuple "list"
+
 \end_inset
 
  is expanded with the help of equation 
