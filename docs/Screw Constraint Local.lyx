@@ -294,6 +294,18 @@ is the displacement between points embedded in each object resolved in body i sp
 \end_layout
 
 \begin_layout Standard
+Here 
+\begin_inset Formula $\mathbf{s}^{,,}_{j}$
+\end_inset
+
+ is the axis point of body j resolved in body j space and 
+\begin_inset Formula $\mathbf{\varDelta}=\mathbf{r}_{j}+\mathbf{s}_{j}-\mathbf{r}_{i}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
 Expanding equation 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -331,7 +343,7 @@ tuple "list"
 \end_layout
 
 \begin_layout Standard
-Equations 6.82 and 6.84 from 
+Equations from 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "nikravesh1988computer"
@@ -339,12 +351,87 @@ literal "false"
 
 \end_inset
 
- are used to isolate the the terms dependent on the accelerations and hence the modified Jacobians:
+,
+ chapter 6 are used to isolate the the terms dependent on the accelerations and hence the modified Jacobians and are copied here for convenience:
 \begin_inset Formula 
 \begin{align*}
 \ddot{\mathbf{A}}\mathbf{u} & =2\dot{\mathbf{G}}\dot{\mathbf{L}}^{T}\mathbf{u}+2\mathbf{G}\overset{-}{\mathbf{u}}\ddot{\mathbf{p}}\\
 \ddot{\mathbf{A}}^{T}\mathbf{u} & =2\dot{\mathbf{L}}\dot{\mathbf{G}}^{T}\mathbf{u}+2\mathbf{L}\overset{+}{\mathbf{u}}\ddot{\mathbf{p}}
 \end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\mathbf{p}=\left[\begin{array}{c}
+e_{0}\\
+e_{1}\\
+e_{2}\\
+e_{3}
+\end{array}\right]
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\mathbf{G}=\left[\begin{array}{cccc}
+-e_{1} & e_{0} & -e_{3} & e_{2}\\
+-e_{2} & e_{3} & e_{0} & -e_{1}\\
+-e_{3} & -e_{2} & e_{1} & e_{0}
+\end{array}\right]
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\mathbf{L}=\left[\begin{array}{cccc}
+-e_{1} & e_{0} & e_{3} & -e_{2}\\
+-e_{2} & -e_{3} & e_{0} & e_{1}\\
+-e_{3} & e_{2} & -e_{1} & e_{0}
+\end{array}\right]
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\overset{+}{\mathbf{u}}=\left[\begin{array}{cccc}
+0 & -u_{x} & -u_{y} & -u_{z}\\
+u_{x} & 0 & -u_{z} & u_{y}\\
+u_{y} & u_{z} & 0 & -u_{x}\\
+u_{z} & -u_{y} & u_{x} & 0
+\end{array}\right]
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\overset{-}{\mathbf{u}}=\left[\begin{array}{cccc}
+0 & -u_{x} & -u_{y} & -u_{z}\\
+u_{x} & 0 & u_{z} & -u_{y}\\
+u_{y} & -u_{z} & 0 & u_{x}\\
+u_{z} & u_{y} & -u_{x} & 0
+\end{array}\right]
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\dot{\mathbf{A}}=2\dot{\mathbf{G}}\mathbf{L}^{T}
+\]
 
 \end_inset
 
@@ -468,9 +555,10 @@ tuple "list"
 
 :
 \begin_inset Formula 
-\[
-m_{1}\ddot{l}=m_{1}\mathbf{a}^{,T}_{i}\ddot{\mathbf{A}}^{T}_{i}\mathbf{\varDelta}+m_{1}\mathbf{a}^{,T}_{i}\mathbf{A}^{T}_{i}\ddot{\mathbf{A}}_{j}\mathbf{s}^{,,}_{j}+m_{1}\mathbf{a}^{,T}_{i}\mathbf{A}^{T}_{i}\ddot{\mathbf{r}}_{j}-m_{1}\mathbf{a}^{,T}_{i}\mathbf{A}^{T}_{i}\ddot{\mathbf{r}}_{i}+2m_{1}\mathbf{a}^{,T}_{i}\dot{\mathbf{A}}^{T}_{i}\dot{\mathbf{A}}_{j}\mathbf{s}^{,,}_{j}+2m_{1}\mathbf{a}^{,T}_{i}\dot{\mathbf{A}}^{T}_{i}\dot{\mathbf{r}}_{j}-2m_{1}\mathbf{a}^{,T}_{i}\dot{\mathbf{A}}^{T}_{i}\dot{\mathbf{r}}_{i}
-\]
+\begin{align*}
+m_{1}\ddot{l} & =m_{1}\mathbf{a}^{,T}_{i}\ddot{\mathbf{A}}^{T}_{i}\mathbf{\varDelta}+m_{1}\mathbf{a}^{,T}_{i}\mathbf{A}^{T}_{i}\ddot{\mathbf{A}}_{j}\mathbf{s}^{,,}_{j}+m_{1}\mathbf{a}^{,T}_{i}\mathbf{A}^{T}_{i}\ddot{\mathbf{r}}_{j}-m_{1}\mathbf{a}^{,T}_{i}\mathbf{A}^{T}_{i}\ddot{\mathbf{r}}_{i}\\
+ & +2m_{1}\mathbf{a}^{,T}_{i}\dot{\mathbf{A}}^{T}_{i}\dot{\mathbf{A}}_{j}\mathbf{s}^{,,}_{j}+2m_{1}\mathbf{a}^{,T}_{i}\dot{\mathbf{A}}^{T}_{i}\dot{\mathbf{r}}_{j}-2m_{1}\mathbf{a}^{,T}_{i}\dot{\mathbf{A}}^{T}_{i}\dot{\mathbf{r}}_{i}
+\end{align*}
 
 \end_inset
 
@@ -489,7 +577,7 @@ literal "false"
  are used once again to find the dependence on the Euler parameter accelerations.
 \begin_inset Formula 
 \begin{align*}
-m_{1}\ddot{l} & =2m_{1}\mathbf{a}^{,T}_{i}\dot{\mathbf{L}}_{i}\dot{\mathbf{G}}^{T}_{i}\varDelta+2m_{1}\mathbf{a}^{,T}_{i}\mathbf{L}_{i}\overset{+}{\mathbf{\varDelta}}\ddot{\mathbf{p}}_{i}+2m_{1}\mathbf{a}^{,T}_{i}\mathbf{A}^{T}_{i}\dot{\mathbf{G}}_{j}\dot{\mathbf{L}}^{T}_{j}\mathbf{s}^{,,}_{j}+2m_{1}\mathbf{a}^{,T}_{i}\mathbf{A}^{T}_{i}\mathbf{G}_{j}\overset{-}{\mathbf{s}_{j}}^{,,}\ddot{\mathbf{p}}_{j}\\
+m_{1}\ddot{l} & =2m_{1}\mathbf{a}^{,T}_{i}\dot{\mathbf{L}}_{i}\dot{\mathbf{G}}^{T}_{i}\varDelta+2m_{1}\mathbf{a}^{,T}_{i}\mathbf{L}_{i}\overset{+}{\mathbf{\varDelta}}\ddot{\mathbf{p}}_{i}+2m_{1}\mathbf{a}^{,T}_{i}\mathbf{A}^{T}_{i}\dot{\mathbf{G}}_{j}\dot{\mathbf{L}}^{T}_{j}\mathbf{s}^{,,}_{j}+2m_{1}\mathbf{a}^{,T}_{i}\mathbf{A}^{T}_{i}\mathbf{G}_{j}\overset{-}{\mathbf{s}}^{,,}_{j}\ddot{\mathbf{p}}_{j}\\
  & +m_{1}\mathbf{a}^{,T}_{i}\mathbf{A}^{T}_{i}\ddot{\mathbf{r}}_{j}-m_{1}\mathbf{a}^{,T}_{i}\mathbf{A}^{T}_{i}\ddot{\mathbf{r}}_{i}+2m_{1}\mathbf{a}^{,T}_{i}\dot{\mathbf{A}}^{T}_{i}\dot{\mathbf{A}}_{j}\mathbf{s}^{,,}_{j}+2m_{1}\mathbf{a}^{,T}_{i}\dot{\mathbf{A}}^{T}_{i}\dot{\mathbf{r}}_{j}-2m_{1}\mathbf{a}^{,T}_{i}\dot{\mathbf{A}}^{T}_{i}\dot{\mathbf{r}}_{i}
 \end{align*}
 
@@ -502,7 +590,7 @@ m_{1}\ddot{l} & =2m_{1}\mathbf{a}^{,T}_{i}\dot{\mathbf{L}}_{i}\dot{\mathbf{G}}^{
 Rearranging to put all the terms dependent on accelerations on the left hand side and the constant terms on the right hand side.
 \begin_inset Formula 
 \begin{equation}
-2m_{1}\mathbf{a}^{,T}_{i}\mathbf{L}_{i}\overset{+}{\mathbf{\varDelta}}\ddot{\mathbf{p}}_{i}+2m_{1}\mathbf{a}^{,T}_{i}\mathbf{A}^{T}_{i}\mathbf{G}_{j}\overset{-}{\mathbf{s}_{j}}^{,,}\ddot{\mathbf{p}}_{j}+m_{1}\mathbf{a}^{,T}_{i}\mathbf{A}^{T}_{i}\ddot{\mathbf{r}}_{j}-m_{1}\mathbf{a}^{,T}_{i}\mathbf{A}^{T}_{i}\ddot{\mathbf{r}}_{i}=\mathbf{\gamma}^{l}\label{eq:m1_l_ddot_acceleration}
+2m_{1}\mathbf{a}^{,T}_{i}\mathbf{L}_{i}\overset{+}{\mathbf{\varDelta}}\ddot{\mathbf{p}}_{i}+2m_{1}\mathbf{a}^{,T}_{i}\mathbf{A}^{T}_{i}\mathbf{G}_{j}\overset{-}{\mathbf{s}}^{,,}_{j}\ddot{\mathbf{p}}_{j}+m_{1}\mathbf{a}^{,T}_{i}\mathbf{A}^{T}_{i}\ddot{\mathbf{r}}_{j}-m_{1}\mathbf{a}^{,T}_{i}\mathbf{A}^{T}_{i}\ddot{\mathbf{r}}_{i}=\mathbf{\gamma}^{l}\label{eq:m1_l_ddot_acceleration}
 \end{equation}
 
 \end_inset
@@ -537,7 +625,7 @@ tuple "list"
 \left(m_{1}\ddot{l}\right)_{\mathbf{r}_{i}} & =-m_{1}\mathbf{a}^{,T}_{i}\mathbf{A}^{T}_{i}\\
 \left(m_{1}\ddot{l}\right)_{\mathbf{p}_{i}} & =2m_{1}\mathbf{a}^{,T}_{i}\mathbf{L}_{i}\overset{+}{\mathbf{\varDelta}}\\
 \left(m_{1}\ddot{l}\right)_{\mathbf{r}_{j}} & =m_{1}\mathbf{a}^{,T}_{i}\mathbf{A}^{T}_{i}\\
-\left(m_{1}\ddot{l}\right)_{\mathbf{p}_{j}} & =2m_{1}\mathbf{a}^{,T}_{i}\mathbf{A}^{T}_{i}\mathbf{G}_{j}\overset{-}{\mathbf{s}_{j}}^{,,}
+\left(m_{1}\ddot{l}\right)_{\mathbf{p}_{j}} & =2m_{1}\mathbf{a}^{,T}_{i}\mathbf{A}^{T}_{i}\mathbf{G}_{j}\overset{-}{\mathbf{s}}^{,,}_{j}
 \end{align*}
 
 \end_inset
@@ -552,7 +640,7 @@ These Jacobians are combined with the Jacobians obtained from the main constrain
 \mathbf{\Phi}_{\mathbf{r_{i}}} & =-m_{1}\mathbf{a}^{,T}_{i}\mathbf{A}^{T}_{i}\\
 \mathbf{\Phi}_{\mathbf{p}_{i}} & =2\mathbf{u}^{,T}_{s}\mathbf{L}_{i}\overset{+}{\mathbf{u}}_{j}+2m_{1}\mathbf{a}^{,T}_{i}\mathbf{L}_{i}\overset{+}{\mathbf{\varDelta}}\\
 \mathbf{\Phi}_{\mathbf{r}_{j}} & =m_{1}\mathbf{a}^{,T}_{i}\mathbf{A}^{T}_{i}\\
-\boldsymbol{\Phi}_{\mathbf{p}_{j}} & =2\mathbf{u}^{,T}_{s}\mathbf{A}^{T}_{i}\mathbf{G}_{j}\overset{-}{\mathbf{u}}^{,,}_{j}+2m_{1}\mathbf{a}^{,T}_{i}\mathbf{A}^{T}_{i}\mathbf{G}_{j}\overset{-}{\mathbf{s}_{j}}^{,,}
+\boldsymbol{\Phi}_{\mathbf{p}_{j}} & =2\mathbf{u}^{,T}_{s}\mathbf{A}^{T}_{i}\mathbf{G}_{j}\overset{-}{\mathbf{u}}^{,,}_{j}+2m_{1}\mathbf{a}^{,T}_{i}\mathbf{A}^{T}_{i}\mathbf{G}_{j}\overset{-}{\mathbf{s}}^{,,}_{j}
 \end{align*}
 
 \end_inset
